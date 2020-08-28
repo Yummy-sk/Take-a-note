@@ -8,16 +8,22 @@ class MonthTable extends StatefulWidget {
 }
 
 class _MonthTableState extends State<MonthTable> {
+  List<Meeting> meetings;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _Calender()
+      body: _Calender(),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.create),
+        onPressed: (){},
+      ),
     );
   }
   Widget _Calender() {
     return SfCalendar(
       view: CalendarView.month,
       showNavigationArrow: true,
+      dataSource: MeetingDataSource(_getDataSource()),
       monthViewSettings: MonthViewSettings(
           showAgenda: true, // 어젠다를 보여줄꺼야
           dayFormat: 'EEE',
@@ -29,6 +35,18 @@ class _MonthTableState extends State<MonthTable> {
       ), // 어젠다 보여주기
     );
   }
+
+  List<Meeting> _getDataSource() {
+    meetings = <Meeting>[];
+    final DateTime today = DateTime.now();
+    final DateTime startTime =
+    DateTime(today.year, today.month, today.day, 9, 0, 0);
+    final DateTime endTime = startTime.add(const Duration(hours: 2));
+    meetings.add(Meeting(
+        'Conference', startTime, endTime, const Color(0xFF0F8644), false));
+    return meetings;
+  }
+
   _ShowAgendaStyle() {
     return AgendaStyle(
       backgroundColor: Colors.transparent,
@@ -49,4 +67,44 @@ class _MonthTableState extends State<MonthTable> {
       )
     );
   }
+}
+class MeetingDataSource extends CalendarDataSource {
+  MeetingDataSource(List<Meeting> source) {
+    appointments = source;
+  }
+
+  @override
+  DateTime getStartTime(int index) {
+    return appointments[index].from;
+  }
+
+  @override
+  DateTime getEndTime(int index) {
+    return appointments[index].to;
+  }
+
+  @override
+  String getSubject(int index) {
+    return appointments[index].eventName;
+  }
+
+  @override
+  Color getColor(int index) {
+    return appointments[index].background;
+  }
+
+  @override
+  bool isAllDay(int index) {
+    return appointments[index].isAllDay;
+  }
+}
+
+class Meeting {
+  Meeting(this.eventName, this.from, this.to, this.background, this.isAllDay);
+
+  String eventName;
+  DateTime from;
+  DateTime to;
+  Color background;
+  bool isAllDay;
 }
