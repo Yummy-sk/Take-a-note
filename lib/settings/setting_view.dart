@@ -1,9 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:take_a_note_project/settings/pomodoroTimeSetting.dart';
-import 'package:take_a_note_project/settings/restTimeSetting.dart';
-import 'package:take_a_note_project/settings/longRestTimeSetting.dart';
-import 'package:take_a_note_project/settings/termOfRestingTime.dart';
 
 class SettingView extends StatefulWidget {
   @override
@@ -11,11 +7,10 @@ class SettingView extends StatefulWidget {
 }
 
 class _SettingViewState extends State<SettingView> {
-  var _pomodoro = PomodoroTimeSetting();
-  var _restTime = RestTimeSetting();
-  var _longRestTime = LongRestTimeSetting();
-  var _termOfRestingTime = TermOfRestingTime();
-
+  var _pomodoroSetting = Setting("Pomodoro Setting", "15분", [ "15분", "30분", "60분", "90분", "120분" ]);
+  var _restTimeSetting = Setting("Rest Time Setting", "5분", [ "5분", "10분", "15분", "20분", "25분" ]);
+  var _longRestTimeSetting = Setting("Long Rest Time Setting", "10분", [ "10분", "15분", "20분", "25분", "30분" ]);
+  var _termOfRestingTimeSetting = Setting("Term of Resting Time Setting", "3번", [ "3번", "4번", "5번", "6번", "7번" ]);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,36 +37,48 @@ class _SettingViewState extends State<SettingView> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          _settingTiles(_pomodoro.settingType, _pomodoro.selectedValue, _pomodoro.settingValues),
-          _settingTiles(_restTime.settingType, _restTime.selectedValue, _restTime.settingValues),
-          _settingTiles(_longRestTime.settingType, _longRestTime.selectedValue, _longRestTime.settingValues),
-          _settingTiles(_termOfRestingTime.settingType, _termOfRestingTime.selectedValue, _termOfRestingTime.settingValues )
+          _settingTiles(_pomodoroSetting),
+          _settingTiles(_restTimeSetting),
+          _settingTiles(_longRestTimeSetting),
+          _settingTiles(_termOfRestingTimeSetting)
         ],
       ),
     );
   }
-  Widget _settingTiles(String settingType, String selectedValue, List settingValues ){
+  Widget _settingTiles(Setting setting){
     return ListTile(
-      title: Text(settingType, style: TextStyle(fontWeight: FontWeight.bold)),
-      subtitle: DropdownButton(
-        elevation: 10,
-        autofocus: true,
-        isExpanded: true,
-        value: selectedValue,
-        items: settingValues.map((value) {
-          return DropdownMenuItem(
-            value: value,
-            child: Text(value),
-          );
+      title: Text(setting.settingType, style: TextStyle(fontWeight: FontWeight.bold)),
+      subtitle: DropdownButtonHideUnderline(
+        child: DropdownButton(
+          elevation: 10,
+          autofocus: true,
+          isExpanded: true,
+          value: setting.selectedValue,
+          items: setting.settingValues.map((value) {
+            return DropdownMenuItem(
+              value: value,
+              child: Text(value),
+            );
+            },
+          ).toList(),
+          onChanged: (value) {
+            setState(() {
+              setting.selectedValue = value;
+              print(setting.selectedValue);
+            });
           },
-        ).toList(),
-        onChanged: (value) {
-          setState(() {
-            selectedValue = value;
-            print(selectedValue);
-          });
-        },
+        ),
       ),
     );
+  }
+}
+class Setting {
+  String settingType;
+  String selectedValue;
+  List settingValues;
+  Setting(String settingType, String selectedValue, List settingValues){
+    this.settingType = settingType;
+    this.selectedValue = selectedValue;
+    this.settingValues = settingValues;
   }
 }
