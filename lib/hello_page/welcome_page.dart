@@ -10,9 +10,10 @@ class _WelcomePageState extends State<WelcomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: Center(
-          child: Text('Take a note', style: TextStyle(fontWeight: FontWeight.bold),)
+          child: Text('Take a note', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),)
         ),
         shape: RoundedRectangleBorder( // AppBar 스타일 지정
           borderRadius: BorderRadius.vertical(
