@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "155679280852",
+    "firebase_url": "https://take-a-note-adf40.firebaseio.com",
+    "project_id": "take-a-note-adf40",
+    "storage_bucket": "take-a-note-adf40.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:155679280852:android:ca9955cbf7c4f76fdef541",
+        "android_client_info": {
+          "package_name": "com.example.take_a_note_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "155679280852-3cd3hdp3imeap9nb599g301jfp9i23m5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.take_a_note_project",
+            "certificate_hash": "d11721f6643fa7b845278b7d0c29788326c6d2a1"
+          }
+        },
+        {
+          "client_id": "155679280852-rii2ei3p14f7ahf0bgdca24p9fmin93k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQCoxLG3CEwsifk8KiBeXspRgxBs5xduw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "155679280852-rii2ei3p14f7ahf0bgdca24p9fmin93k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -21,8 +21,12 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
+  firebase_helpers: ^0.2.0
+  cloud_firestore: ^0.14.0+2
   syncfusion_flutter_calendar: 18.2.48
   gradient_app_bar: ^0.1.3
+  shared_preferences: ^0.5.10
+  table_calendar: ^2.2.3
   flutter:
     sdk: flutter
 
@@ -71,6 +75,7 @@ flutter:
   #       - asset: fonts/Schyler-Regular.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
+
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf
