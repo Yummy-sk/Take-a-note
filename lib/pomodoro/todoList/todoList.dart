@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -33,8 +34,8 @@ class _TodoListState extends State<TodoList> {
     super.initState();
     _controller = CalendarController();
     _eventController = TextEditingController();
-    _events = {};
     _selectedEvents = [];
+    initPrefs();
   }
 
   initPrefs() async {
@@ -59,9 +60,32 @@ class _TodoListState extends State<TodoList> {
             child: Column(
               children: <Widget>[
                 _TableCalendar(),
-               ... _selectedEvents.map((event) => ListTile(
-                  title: Text(event),
-                ))
+                ListView.builder(
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  itemCount: _selectedEvents.length,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onLongPress: (){
+                        setState(() {
+                          _changeList(index);
+                        });
+                      },
+                      child: Card(
+                        child: Dismissible(
+                            key: Key(_selectedEvents[index]["todo"]),
+                            onDismissed: (direction) {
+                              setState(() {
+                                _selectedEvents.removeAt(index);
+                                prefs.setString("events", json.encode(encodedMap(_events)));
+                              });
+                            },
+                            background: Container(color: Colors.red),
+                            child: ListTile(title: Text(_selectedEvents[index]["todo"]),)),
+                      ),
+                    );
+                  },
+                )
               ],
             )
           )
@@ -74,9 +98,25 @@ class _TodoListState extends State<TodoList> {
   }
   Widget _TableCalendar(){
     return TableCalendar( // Calendar Style
+      initialCalendarFormat: CalendarFormat.week,
       events: _events,
-      calendarStyle: CalendarStyle( // Calendar Style
-        todayColor: Colors.orange
+      calendarStyle: CalendarStyle(
+        // Calendar Style
+        todayColor: Colors.orange,
+        selectedColor: Theme.of(context).primaryColor,
+        todayStyle: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 18.0,
+          color: Colors.white,
+        ),
+      ),
+      headerStyle: HeaderStyle(
+        centerHeaderTitle: true,
+        formatButtonDecoration: BoxDecoration(
+          color: Colors.orange,
+          borderRadius: BorderRadius.circular(20.0)
+        ),
+        formatButtonTextStyle: TextStyle(color: Colors.white),
       ),
       calendarController: _controller,
       onDaySelected: (date, events) {
@@ -84,6 +124,26 @@ class _TodoListState extends State<TodoList> {
           _selectedEvents = events;
         });
       },
+      builders: CalendarBuilders(
+        selectedDayBuilder: (context, date, events) => Container(
+          child: Text(date.day.toString(), style: TextStyle(color: Colors.white),),
+          margin: const EdgeInsets.all(4.0),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: Theme.of(context).primaryColor,
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+        ),
+        todayDayBuilder:  (context, date, events) => Container(
+          child: Text(date.day.toString(), style: TextStyle(color: Colors.white),),
+          margin: const EdgeInsets.all(4.0),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: Colors.orange,
+            borderRadius: BorderRadius.circular(10.0)
+          ),
+        ),
+      ),
     );
   }
 
@@ -91,19 +151,39 @@ class _TodoListState extends State<TodoList> {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
+          title: Text("할 일을 추가합니다.", style: TextStyle(fontWeight: FontWeight.bold)),
+          elevation: 24.0,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20.0))
+          ),
           content: TextField(
             controller: _eventController,
           ),
           actions: <Widget>[
-            FlatButton(
-              child: Text("Save"),
+            RaisedButton(
+              color: Colors.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18.0),
+                  side: BorderSide(color: Colors.lightBlue)
+              ),
+              child: Text("Save", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.lightBlue),),
               onPressed: (){
+
                 if(_eventController.text.isEmpty) return;
+
                 setState(() {
+
+                  Map<String, dynamic> toMap() {
+                    return {
+                      'todo': _eventController.text,
+                      'isDone': false
+                    };
+                  }
+
                   if (_events[_controller.selectedDay] != null){
-                    _events[_controller.selectedDay].add(_eventController.text);
+                    _events[_controller.selectedDay].add(toMap());
                   }else {
-                    _events[_controller.selectedDay] = [_eventController.text];
+                    _events[_controller.selectedDay] = [toMap()];
                   }
                   _eventController.clear();
                   prefs.setString("events", json.encode(encodedMap(_events)));
@@ -114,6 +194,46 @@ class _TodoListState extends State<TodoList> {
             )
           ],
         )
+    );
+  }
+  _changeList(int index){
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("할 일을 수정합니다.", style: TextStyle(fontWeight: FontWeight.bold),),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20.0))
+        ),
+        content: TextField(controller: _eventController),
+        actions: <Widget>[
+          RaisedButton(
+              color: Colors.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18.0),
+                  side: BorderSide(color: Colors.lightBlue)
+              ),
+              child: Text("Save", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.lightBlue),),
+            onPressed: (){
+              setState(() {
+                _selectedEvents[index]["todo"] = _eventController.text;
+                prefs.setString("events", json.encode(encodedMap(_events)));
+                Navigator.pop(context);
+              });
+            }
+            ),
+          RaisedButton(
+            color: Colors.white,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18.0),
+                side: BorderSide(color: Colors.deepOrangeAccent)
+            ),
+            child: Text("Cancel", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.deepOrangeAccent),),
+            onPressed: (){
+              Navigator.pop(context);
+            },
+          )
+        ],
+      )
     );
   }
 }

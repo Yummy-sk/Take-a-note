@@ -14,7 +14,9 @@ class _PomodoroState extends State<Pomodoro> with TickerProviderStateMixin {
   Timer timer;
   double percent = 0;
   static int TimeInMinut = 25;
+  int secoundPerMinute = 00;
   int TimeInSec = TimeInMinut * 60; // 초 수
+  int count = 0;
   int _currentIndex = 0;
   bool isPlaying = false;
   final List<Widget> bottomPages = [TodoList(), SettingView()];
@@ -34,11 +36,13 @@ class _PomodoroState extends State<Pomodoro> with TickerProviderStateMixin {
     super.initState();
     _animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 450));
   }
+
   @override
   void dispose(){
     super.dispose();
     _animationController.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,13 +76,14 @@ class _PomodoroState extends State<Pomodoro> with TickerProviderStateMixin {
         lineWidth: 5.0,
         progressColor: Colors.white,
         center: Text(
-          "$TimeInMinut",
+          "$TimeInMinut : $secoundPerMinute",
           style: TextStyle(color: Colors.white,
               fontSize: 50.0,
               fontWeight: FontWeight.w300),
         )
     );
   }
+
   Widget _ClockButtons(){
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -88,6 +93,7 @@ class _PomodoroState extends State<Pomodoro> with TickerProviderStateMixin {
       ],
     );
   }
+
   Widget _StopButton(){
     return IconButton(
       iconSize: 50,
@@ -97,6 +103,7 @@ class _PomodoroState extends State<Pomodoro> with TickerProviderStateMixin {
       onPressed: () => {},
     );
   }
+
   Widget _PauseButton(){
     return IconButton(
             iconSize: 50,
@@ -124,6 +131,10 @@ class _PomodoroState extends State<Pomodoro> with TickerProviderStateMixin {
     double SecPercent = (Time/100);
     timer = Timer.periodic(Duration(seconds: 1), (timer) {
       setState(() {
+        if(secoundPerMinute == 00) {
+          secoundPerMinute = 60;
+        }
+        --secoundPerMinute;
         if (Time > 0){
           Time--;
           if(Time % 60 == 0){ // 분 수가 00 초이면, 분수를 감소.
@@ -139,6 +150,7 @@ class _PomodoroState extends State<Pomodoro> with TickerProviderStateMixin {
         }else {
           percent = 0;
           TimeInSec = 25;
+          ++count;
           timer.cancel();
         }
       });
