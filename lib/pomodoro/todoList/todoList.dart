@@ -67,9 +67,7 @@ class _TodoListState extends State<TodoList> {
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       onLongPress: (){
-                        setState(() {
-                          _changeList(index);
-                        });
+                        setState(() { _changeList(index); });
                       },
                       child: Card(
                         child: Dismissible(
@@ -77,7 +75,7 @@ class _TodoListState extends State<TodoList> {
                             onDismissed: (direction) {
                               setState(() {
                                 _selectedEvents.removeAt(index);
-                                prefs.setString("events", json.encode(encodedMap(_events)));
+                                _save();
                               });
                             },
                             background: Container(color: Colors.red),
@@ -135,7 +133,6 @@ class _TodoListState extends State<TodoList> {
           ),
         ),
         todayDayBuilder:  (context, date, events) => Container(
-          child: Text(date.day.toString(), style: TextStyle(color: Colors.white),),
           margin: const EdgeInsets.all(4.0),
           alignment: Alignment.center,
           decoration: BoxDecoration(
@@ -186,7 +183,7 @@ class _TodoListState extends State<TodoList> {
                     _events[_controller.selectedDay] = [toMap()];
                   }
                   _eventController.clear();
-                  prefs.setString("events", json.encode(encodedMap(_events)));
+                  _save();
                   _eventController.clear();
                   Navigator.pop(context);
                 });
@@ -216,7 +213,7 @@ class _TodoListState extends State<TodoList> {
             onPressed: (){
               setState(() {
                 _selectedEvents[index]["todo"] = _eventController.text;
-                prefs.setString("events", json.encode(encodedMap(_events)));
+                _save();
                 Navigator.pop(context);
               });
             }
@@ -235,5 +232,8 @@ class _TodoListState extends State<TodoList> {
         ],
       )
     );
+  }
+  _save(){
+    prefs.setString("events", json.encode(encodedMap(_events)));
   }
 }

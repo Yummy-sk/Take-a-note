@@ -12,16 +12,15 @@ class Pomodoro extends StatefulWidget {
 
 class _PomodoroState extends State<Pomodoro> with TickerProviderStateMixin {
   Timer timer;
-  double percent = 0;
-  static int TimeInMinut = 25;
-  int secoundPerMinute = 00;
-  int TimeInSec = TimeInMinut * 60; // 초 수
+  DateTime start;
   int count = 0;
+  int elapsedTime = 0;
   int _currentIndex = 0;
   bool isPlaying = false;
+  static int pomodoroTime = 5;
+  static int time = pomodoroTime * 60;
   final List<Widget> bottomPages = [TodoList(), SettingView()];
   AnimationController _animationController;
-
   void _onTab(int index) {
     setState(() {
       _currentIndex = index;
@@ -67,6 +66,7 @@ class _PomodoroState extends State<Pomodoro> with TickerProviderStateMixin {
     );
   }
   Widget _ClockView(){
+    double percent = elapsedTime / time;
     return CircularPercentIndicator(
         circularStrokeCap: CircularStrokeCap.round,
         percent: percent,
@@ -76,7 +76,7 @@ class _PomodoroState extends State<Pomodoro> with TickerProviderStateMixin {
         lineWidth: 5.0,
         progressColor: Colors.white,
         center: Text(
-          "$TimeInMinut : $secoundPerMinute",
+          _formatTime(elapsedTime, time),
           style: TextStyle(color: Colors.white,
               fontSize: 50.0,
               fontWeight: FontWeight.w300),
@@ -89,22 +89,29 @@ class _PomodoroState extends State<Pomodoro> with TickerProviderStateMixin {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         _StopButton(),
-        _PauseButton()
+        _PalyAndPauseButton()
       ],
     );
   }
 
-  Widget _StopButton(){
+  Widget _StopButton() {
     return IconButton(
       iconSize: 50,
       splashColor: Colors.white,
       color: Colors.white,
       icon: Icon(Icons.stop),
-      onPressed: () => {},
+      onPressed: () => {
+        setState((){
+          time = pomodoroTime * 60;
+          elapsedTime = 0;
+        }),
+        _animationController.reverse(),
+        timer.cancel()
+      },
     );
   }
 
-  Widget _PauseButton(){
+  Widget _PalyAndPauseButton(){
     return IconButton(
             iconSize: 50,
             splashColor: Colors.white,
@@ -115,7 +122,6 @@ class _PomodoroState extends State<Pomodoro> with TickerProviderStateMixin {
             ),
           onPressed: () => {
               _HandleOnPressed(),
-              _StartTimer(),
           },
         );
   }
@@ -123,39 +129,36 @@ class _PomodoroState extends State<Pomodoro> with TickerProviderStateMixin {
     setState(() {
       isPlaying = !isPlaying;
       isPlaying ? _animationController.forward() : _animationController.reverse();
+      if (isPlaying){ _StartTimer(); }
+      else { timer.cancel();}
     });
   }
+  // duration : 총시간, now : 얼마나 지났는지
+  _formatTime(int now, int duration){
+    String first = ((duration - now) ~/ 60).toString();
+    int seconds = ((duration - now) % 60);
+    String latter = (seconds < 10 ? "0" : "") + seconds.toString();
+    return  first + ":" + latter;
+  }
+
   _StartTimer(){
-    TimeInMinut = 25;
-    int Time = TimeInMinut * 60;
-    double SecPercent = (Time/100);
-    timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    start = new DateTime.now() ;
+    start = elapsedTime > 0 ? start.subtract( Duration( seconds: elapsedTime)) : start;
+    timer = Timer.periodic(Duration(seconds: 1), (timer){ // 1초에 한번씩 함수 실행.
       setState(() {
-        if(secoundPerMinute == 00) {
-          secoundPerMinute = 60;
-        }
-        --secoundPerMinute;
-        if (Time > 0){
-          Time--;
-          if(Time % 60 == 0){ // 분 수가 00 초이면, 분수를 감소.
-            TimeInMinut--;
-          }
-          if (Time % SecPercent == 0){
-            if (percent < 1) {
-              percent += 0.01;
-            }else {
-              percent = 1;
-            }
-          }
+        if ( time > elapsedTime ){
+          elapsedTime = DateTime.now().difference(start).inSeconds;
         }else {
-          percent = 0;
-          TimeInSec = 25;
+          time = pomodoroTime * 60;
+          elapsedTime = 0;
           ++count;
+          _animationController.reverse();
           timer.cancel();
         }
       });
     });
   }
+
   Widget _SettingButtons() {
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
