@@ -33,7 +33,7 @@ class _CardState extends State<CardView> {
   }
 
   Widget cardLyout(
-      Color color, Text titleText, String imagePath, StatefulWidget page) {
+      Color color, Text titleText, String imagePath, dynamic page) {
     return GestureDetector(
       // card를 클릭 가능하게 변경
       onTap: () => {

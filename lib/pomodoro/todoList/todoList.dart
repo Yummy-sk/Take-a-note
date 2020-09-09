@@ -70,6 +70,8 @@ class _TodoListState extends State<TodoList> {
                         setState(() { _changeList(index); });
                       },
                       child: Card(
+                        elevation: 5,
+                        color: _selectedEvents[index]["isdone"] == true ? Colors.deepPurpleAccent : Colors.white,
                         child: Dismissible(
                             key: Key(_selectedEvents[index]["todo"]),
                             onDismissed: (direction) {
@@ -78,8 +80,16 @@ class _TodoListState extends State<TodoList> {
                                 _save();
                               });
                             },
-                            background: Container(color: Colors.red),
-                            child: ListTile(title: Text(_selectedEvents[index]["todo"]),)),
+                            background: _deleteColor(),
+                            child: ListTile(
+                              leading: _selectedEvents[index]["isdone"]  == true
+                                  ? Icon(Icons.check_circle, color: Colors.white)
+                                  : Icon(Icons.radio_button_unchecked, color: Colors.blueAccent,),
+                              title: _selectedEvents[index]["isdone"] == true
+                                  ? Text(_selectedEvents[index]["todo"], style: TextStyle(fontWeight: FontWeight.normal, fontSize: 20, color: Colors.white),)
+                                  : Text(_selectedEvents[index]["todo"], style: TextStyle(fontWeight: FontWeight.normal, fontSize: 20),),
+                            )
+                        ),
                       ),
                     );
                   },
@@ -89,7 +99,7 @@ class _TodoListState extends State<TodoList> {
           )
         ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
+        child: Icon(Icons.create),
         onPressed: _showAddDialog,
       ),
       );
@@ -235,5 +245,14 @@ class _TodoListState extends State<TodoList> {
   }
   _save(){
     prefs.setString("events", json.encode(encodedMap(_events)));
+  }
+  Widget _deleteColor(){
+    return Container(
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+              colors: [Colors.deepOrangeAccent, Colors.orange, Colors.orangeAccent, Colors.amberAccent, Colors.yellow, Colors.yellow]
+          )
+      ),
+    );
   }
 }

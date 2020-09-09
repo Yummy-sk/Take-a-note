@@ -1,16 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
+import 'package:provider/provider.dart';
+import 'package:take_a_note_project/settings/setting_data_handler.dart';
 import 'hello_page/welcome_page.dart';
 
-var database;
+void main() => runApp(Main());
 
-void main(){
-
-  runApp(MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: WelcomePage(),
-
-  ));
-
+class Main extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<SettingDataHandler>(
+      builder: (__) => SettingDataHandler(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: WelcomePage(),
+      ),
+    );
+  }
 }
+

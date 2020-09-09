@@ -2,7 +2,9 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:provider/provider.dart';
 import 'package:take_a_note_project/pomodoro/todoList/todoList.dart';
+import 'package:take_a_note_project/settings/setting_data_handler.dart';
 import 'package:take_a_note_project/settings/setting_view.dart';
 
 class Pomodoro extends StatefulWidget {
@@ -17,9 +19,9 @@ class _PomodoroState extends State<Pomodoro> with TickerProviderStateMixin {
   int elapsedTime = 0;
   int _currentIndex = 0;
   bool isPlaying = false;
-  static int pomodoroTime = 5;
-  static int time = pomodoroTime * 60;
-  final List<Widget> bottomPages = [TodoList(), SettingView()];
+  static int pomodoroTime;
+  static int time;
+  final List<dynamic> bottomPages = [TodoList(), SettingView()];
   AnimationController _animationController;
   void _onTab(int index) {
     setState(() {
@@ -44,26 +46,25 @@ class _PomodoroState extends State<Pomodoro> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final settings = Provider.of<SettingDataHandler>(context);
+    pomodoroTime = settings.pomodoroSetting.selectedValue;
+    time = pomodoroTime * 60;
     return Scaffold(
-      bottomNavigationBar: _SettingButtons(),
-        body: Container(
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [Colors.cyan[100], Colors.cyan[700]]
-              )
-          ),
-          width: double.infinity,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              _ClockView(),
-              _ClockButtons(),
-            ],
-          ),
-        )
-    );
+        bottomNavigationBar: _SettingButtons(),
+          body: Container(
+            decoration: BoxDecoration(
+               color: Colors.black54,
+            ),
+            width: double.infinity,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                _ClockView(),
+                _ClockButtons(),
+              ],
+            ),
+          )
+      );
   }
   Widget _ClockView(){
     double percent = elapsedTime / time;
@@ -74,7 +75,7 @@ class _PomodoroState extends State<Pomodoro> with TickerProviderStateMixin {
         animateFromLastPercent: true,
         radius: 300.0,
         lineWidth: 5.0,
-        progressColor: Colors.white,
+        progressColor: Colors.deepOrange,
         center: Text(
           _formatTime(elapsedTime, time),
           style: TextStyle(color: Colors.white,

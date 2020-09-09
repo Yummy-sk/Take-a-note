@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:take_a_note_project/pomodoro/pomodoro.dart';
+import 'package:provider/provider.dart';
+import 'package:take_a_note_project/settings/setting_data_handler.dart';
+
 
 class SettingView extends StatefulWidget {
   @override
@@ -8,12 +10,20 @@ class SettingView extends StatefulWidget {
 }
 
 class _SettingViewState extends State<SettingView> {
-  var pomodoroSetting = Setting("Pomodoro Setting", "15분", [ "15분", "30분", "60분", "90분", "120분" ]);
-  var restTimeSetting = Setting("Rest Time Setting", "5분", [ "5분", "10분", "15분", "20분", "25분" ]);
-  var longRestTimeSetting = Setting("Long Rest Time Setting", "10분", [ "10분", "15분", "20분", "25분", "30분" ]);
-  var termOfRestingTimeSetting = Setting("Term of Resting Time Setting", "3번", [ "3번", "4번", "5번", "6번", "7번" ]);
+  var pomodoroSetting;
+  var restTimeSetting;
+  var longRestTimeSetting;
+  var termOfRestingTimeSetting;
+
   @override
   Widget build(BuildContext context) {
+
+    final settings = Provider.of<SettingDataHandler>(context);
+    pomodoroSetting = settings.pomodoroSetting;
+    restTimeSetting = settings.restTimeSetting;
+    longRestTimeSetting = settings.longRestTimeSetting;
+    termOfRestingTimeSetting = settings.termOfRestingTimeSetting;
+
     return Scaffold(
       body: Container(
         padding: EdgeInsets.all(10),
@@ -38,15 +48,15 @@ class _SettingViewState extends State<SettingView> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          _settingTiles(pomodoroSetting),
-          _settingTiles(restTimeSetting),
-          _settingTiles(longRestTimeSetting),
-          _settingTiles(termOfRestingTimeSetting)
+          _settingMinute(pomodoroSetting),
+          _settingMinute(restTimeSetting),
+          _settingMinute(longRestTimeSetting),
+          _settingTerm(termOfRestingTimeSetting)
         ],
       ),
     );
   }
-  Widget _settingTiles(Setting setting){
+  Widget _settingMinute(Setting setting){
     return ListTile(
       title: Text(setting.settingType, style: TextStyle(fontWeight: FontWeight.bold)),
       subtitle: DropdownButtonHideUnderline(
@@ -58,31 +68,42 @@ class _SettingViewState extends State<SettingView> {
           items: setting.settingValues.map((value) {
             return DropdownMenuItem(
               value: value,
-              child: Text(value),
+              child: Text(value.toString() + " 분"),
             );
             },
           ).toList(),
           onChanged: (value) {
             setState(() {
               setting.selectedValue = value;
-              print(setting.selectedValue);
-              print(pomodoroSetting.selectedValue);
-              print(restTimeSetting.selectedValue);
             });
           },
         ),
       ),
     );
   }
-}
-
-class Setting {
-  String settingType;
-  String selectedValue;
-  List settingValues;
-  Setting(String settingType, String selectedValue, List settingValues){
-    this.settingType = settingType;
-    this.selectedValue = selectedValue;
-    this.settingValues = settingValues;
+  Widget _settingTerm(Setting setting){
+    return ListTile(
+      title: Text(setting.settingType, style: TextStyle(fontWeight: FontWeight.bold)),
+      subtitle: DropdownButtonHideUnderline(
+        child: DropdownButton(
+          elevation: 10,
+          autofocus: true,
+          isExpanded: true,
+          value: setting.selectedValue,
+          items: setting.settingValues.map((value) {
+            return DropdownMenuItem(
+              value: value,
+              child: Text(value.toString() + " 번"),
+            );
+          },
+          ).toList(),
+          onChanged: (value) {
+            setState(() {
+              setting.selectedValue = value;
+            });
+          },
+        ),
+      ),
+    );
   }
 }
