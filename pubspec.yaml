@@ -31,7 +31,7 @@ dependencies:
   gradient_app_bar: ^0.1.3
   shared_preferences: ^0.5.10
   table_calendar: ^2.2.3
-  provider: ^3.0.0+1
+  parovider: ^3.0.0+1
   flutter:
     sdk: flutter
 
