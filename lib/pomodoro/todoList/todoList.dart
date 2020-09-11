@@ -67,7 +67,7 @@ class _TodoListState extends State<TodoList> {
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       onLongPress: (){
-                        setState(() { _changeList(index); });
+                        setState(() { changeList(index); });
                       },
                       child: Card(
                         elevation: 5,
@@ -88,6 +88,12 @@ class _TodoListState extends State<TodoList> {
                               title: _selectedEvents[index]["isdone"] == true
                                   ? Text(_selectedEvents[index]["todo"], style: TextStyle(fontWeight: FontWeight.normal, fontSize: 20, color: Colors.white),)
                                   : Text(_selectedEvents[index]["todo"], style: TextStyle(fontWeight: FontWeight.normal, fontSize: 20),),
+                              onTap: () => {
+                                setState((){
+                                  _selectedEvents[index]["isdone"] == true ? _selectedEvents[index]["isdone"] = false : _selectedEvents[index]["isdone"] = true;
+                                  _save();
+                                })
+                              },
                             )
                         ),
                       ),
@@ -203,7 +209,7 @@ class _TodoListState extends State<TodoList> {
         )
     );
   }
-  _changeList(int index){
+  changeList(int index){
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -243,9 +249,19 @@ class _TodoListState extends State<TodoList> {
       )
     );
   }
+
+  Widget statusBox(){
+    return Column(
+      children: <Widget>[
+
+      ],
+    );
+  }
+
   _save(){
     prefs.setString("events", json.encode(encodedMap(_events)));
   }
+
   Widget _deleteColor(){
     return Container(
       decoration: BoxDecoration(
@@ -255,4 +271,5 @@ class _TodoListState extends State<TodoList> {
       ),
     );
   }
+
 }

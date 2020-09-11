@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 import 'package:take_a_note_project/pomodoro/todoList/todoList.dart';
 import 'package:take_a_note_project/settings/setting_data_handler.dart';
 import 'package:take_a_note_project/settings/setting_view.dart';
@@ -15,13 +16,19 @@ class Pomodoro extends StatefulWidget {
 class _PomodoroState extends State<Pomodoro> with TickerProviderStateMixin {
   Timer timer;
   DateTime start;
+  String startTime;
+  String endTime;
   int count = 0;
   int elapsedTime = 0;
   int _currentIndex = 0;
   bool isPlaying = false;
   static int pomodoroTime;
   static int time;
+  static final DateTime checkTime = DateTime.now();
+  static final DateFormat formatter = DateFormat('MM월 dd일 H시 m분');
+  final String formatted = formatter.format(checkTime);
   final List<dynamic> bottomPages = [TodoList(), SettingView()];
+  TextEditingController _eventController;
   AnimationController _animationController;
   void _onTab(int index) {
     setState(() {
@@ -47,7 +54,7 @@ class _PomodoroState extends State<Pomodoro> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final settings = Provider.of<SettingDataHandler>(context);
-    pomodoroTime = settings.pomodoroSetting.selectedValue;
+    pomodoroTime = settings.selectedTimes["Pomodoro Setting"];
     time = pomodoroTime * 60;
     return Scaffold(
         bottomNavigationBar: _SettingButtons(),
@@ -66,6 +73,7 @@ class _PomodoroState extends State<Pomodoro> with TickerProviderStateMixin {
           )
       );
   }
+
   Widget _ClockView(){
     double percent = elapsedTime / time;
     return CircularPercentIndicator(
@@ -107,7 +115,9 @@ class _PomodoroState extends State<Pomodoro> with TickerProviderStateMixin {
           elapsedTime = 0;
         }),
         _animationController.reverse(),
-        timer.cancel()
+        timer.cancel(),
+        bottomSheet(),
+        endTime = formatter.format(new DateTime.now())
       },
     );
   }
@@ -131,7 +141,7 @@ class _PomodoroState extends State<Pomodoro> with TickerProviderStateMixin {
       isPlaying = !isPlaying;
       isPlaying ? _animationController.forward() : _animationController.reverse();
       if (isPlaying){ _StartTimer(); }
-      else { timer.cancel();}
+      else {timer.cancel();}
     });
   }
   // duration : 총시간, now : 얼마나 지났는지
@@ -143,6 +153,7 @@ class _PomodoroState extends State<Pomodoro> with TickerProviderStateMixin {
   }
 
   _StartTimer(){
+    startTime = formatted;
     start = new DateTime.now() ;
     start = elapsedTime > 0 ? start.subtract( Duration( seconds: elapsedTime)) : start;
     timer = Timer.periodic(Duration(seconds: 1), (timer){ // 1초에 한번씩 함수 실행.
@@ -150,11 +161,13 @@ class _PomodoroState extends State<Pomodoro> with TickerProviderStateMixin {
         if ( time > elapsedTime ){
           elapsedTime = DateTime.now().difference(start).inSeconds;
         }else {
+          endTime = formatter.format(new DateTime.now());
           time = pomodoroTime * 60;
           elapsedTime = 0;
           ++count;
           _animationController.reverse();
           timer.cancel();
+          bottomSheet();
         }
       });
     });
@@ -184,4 +197,103 @@ class _PomodoroState extends State<Pomodoro> with TickerProviderStateMixin {
       title: Text('Setting', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),)
     );
   }
+
+  void bottomSheet(){
+    showModalBottomSheet(context: context, builder: (context) {
+      return Container(
+        color: Color(0xFF737373),
+        height: 170,
+        child: Container(
+          child: bottomSheetMenu(),
+          decoration: BoxDecoration(
+            color: Theme.of(context).canvasColor,
+            borderRadius: BorderRadius.only(
+              topLeft: const Radius.circular(10),
+              topRight: const Radius.circular(10),
+            )
+          ),
+        ),
+      );
+    });
+  }
+  Column bottomSheetMenu() {
+    return Column(
+      children: <Widget>[
+        ListTile(
+          leading: Icon(Icons.create),
+          title: Text('직접 작성합니다.'),
+          onTap: () =>
+          {
+            closePopup(),
+            _writeWhatYouDid()
+          },
+        ),
+        ListTile(
+          leading: Icon(Icons.assignment_turned_in),
+          title: Text('Todo List에서 선택합니다.'),
+          onTap: () =>
+          {
+            closePopup()
+          },
+        ),
+        ListTile(
+          leading: Icon(Icons.close),
+          title: Text('기록하지 않겠습니다.'),
+          onTap: () =>
+          {
+            closePopup()
+          },
+        )
+      ],
+    );
+  }
+
+  _writeWhatYouDid() {
+    return showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+            title: Center(child: Text(startTime + " ~ " + endTime + " 동안 무엇을 하셨나요?")),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all((Radius.circular(20.0)))
+            ),
+            content: TextField(
+              controller: _eventController,
+            ),
+            actions: <Widget>[
+              saveButton(),
+              cancelButton()
+            ]
+        )
+    );
+  }
+
+  Widget saveButton(){
+    return RaisedButton(
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(18.0),
+        side: BorderSide(color: Colors.lightBlue),
+      ),
+      child: Text("Save", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.lightBlue),),
+      onPressed: (){
+        closePopup();
+      },
+    );
+  }
+
+  Widget cancelButton(){
+    return RaisedButton(
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(18.0),
+        side: BorderSide(color: Colors.deepOrangeAccent),
+      ),
+      child: Text("Cancel", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.deepOrangeAccent),),
+      onPressed: (){
+        closePopup();
+      },
+    );
+  }
+
+  void closePopup() { Navigator.pop(context); }
 }
