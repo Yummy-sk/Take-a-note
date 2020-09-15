@@ -33,6 +33,7 @@ dependencies:
   table_calendar: ^2.2.3
   provider: ^3.0.0+1
   modal_bottom_sheet: ^0.2.0+1
+  date_range_picker: ^1.0.5
   intl: ^0.16.1
   flutter:
     sdk: flutter

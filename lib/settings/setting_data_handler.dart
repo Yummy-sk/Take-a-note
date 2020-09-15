@@ -14,5 +14,4 @@ class SettingDataHandler extends ChangeNotifier {
     selectedTimes.update(typeOfSetting, (value) => changeValue);
     notifyListeners();
   }
-
 }

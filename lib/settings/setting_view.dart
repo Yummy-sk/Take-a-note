@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,7 +20,6 @@ class _SettingViewState extends State<SettingView> {
   @override
   void initState() {
     super.initState();
-    _initPref();
   }
 
   @override
@@ -54,15 +51,15 @@ class _SettingViewState extends State<SettingView> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          _settingMinute(pomodoroSetting, settingDataHandler.selectedTimes["Pomodoro Setting"]),
-          _settingMinute(restTimeSetting, settingDataHandler.selectedTimes["Rest Time Setting"]),
-          _settingMinute(longRestTimeSetting, settingDataHandler.selectedTimes["Long Rest Time Setting"]),
-          _settingTerm(termOfRestingTimeSetting, settingDataHandler.selectedTimes["Term of Resting Time Setting"])
+          _settingMinute(pomodoroSetting, "Pomodoro Setting"),
+          _settingMinute(restTimeSetting, "Rest Time Setting"),
+          _settingMinute(longRestTimeSetting, "Long Rest Time Setting"),
+          _settingTerm(termOfRestingTimeSetting, settingDataHandler.selectedTimes["Term of Resting Time Setting"]),
         ],
       ),
     );
   }
-  Widget _settingMinute(Setting setting, int selectedValue){
+  Widget _settingMinute(Setting setting, String selectedColumn){
     return ListTile(
       title: Text(setting.settingType, style: TextStyle(fontWeight: FontWeight.bold)),
       subtitle: DropdownButtonHideUnderline(
@@ -70,18 +67,18 @@ class _SettingViewState extends State<SettingView> {
           elevation: 10,
           autofocus: true,
           isExpanded: true,
-          value: selectedValue,
+          value: settingDataHandler.selectedTimes[selectedColumn],
           items: setting.settingValues.map((value) {
             return DropdownMenuItem(
               value: value,
               child: Text(value.toString() + " 분"),
             );
-            },
+          },
           ).toList(),
           onChanged: (value) {
             setState(() {
               settingDataHandler.setTime(setting.settingType, value);
-              _resetPref();
+              _changedTime();
             });
           },
         ),
@@ -114,17 +111,12 @@ class _SettingViewState extends State<SettingView> {
     );
   }
 
-  Future<dynamic> _initPref() async {
+  Future<void> _changedTime() async {
     prefs = await SharedPreferences.getInstance();
-    final timeData = prefs.get('timeData');
-    return timeData;
+    int currentPomodoroTime = settingDataHandler.selectedTimes["Pomodoro Setting"];
+    print(currentPomodoroTime);
+    await prefs.setInt('timeData', currentPomodoroTime);
   }
-
-  Future<void> _resetPref() async {
-    prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('timeData', settingDataHandler.selectedTimes["Pomodoro Setting"]);
-  }
-
 }
 
 class Setting {
