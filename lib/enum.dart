@@ -1,0 +1,1 @@
+enum MenuType { pomodoro, calendar, todoList, settings }

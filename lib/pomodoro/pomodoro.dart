@@ -5,10 +5,7 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:take_a_note_project/pomodoro/todoList/todoList.dart';
 import 'package:take_a_note_project/settings/setting_data_handler.dart';
-import 'package:take_a_note_project/settings/setting_view.dart';
-import 'package:date_range_picker/date_range_picker.dart' as DateRagePicker;
 
 class Pomodoro extends StatefulWidget {
   @override
@@ -22,28 +19,19 @@ class _PomodoroState extends State<Pomodoro> with TickerProviderStateMixin {
   String endTime;
   int count = 0;
   int elapsedTime = 0;
-  int _currentIndex = 0;
   bool isPlaying = false;
   static int pomodoroTime;
   static int time;
   static final DateTime checkTime = DateTime.now();
   static final DateFormat formatter = DateFormat('MM월 dd일 H시 m분');
   final String formatted = formatter.format(checkTime);
-  final List<dynamic> bottomPages = [TodoList(), SettingView()];
   TextEditingController _eventController;
   AnimationController _animationController;
   SharedPreferences prefs;
   SettingDataHandler settingDataHandler;
   DateTime _dateTimeStart;
   DateTime _dateTimeEnd;
-
-  void _onTab(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => bottomPages[_currentIndex]));
-  }
+  var screenWidth;
 
   @override
   void initState() {
@@ -75,23 +63,40 @@ class _PomodoroState extends State<Pomodoro> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    screenWidth = MediaQuery.of(context).size.width;
     settingDataHandler = Provider.of<SettingDataHandler>(context, listen: false);
 
     return Scaffold(
-        bottomNavigationBar: _SettingButtons(),
         body: Container(
           decoration: BoxDecoration(
             color: Colors.black54,
           ),
           width: double.infinity,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               _ClockView(),
-              _ClockButtons(),
+              bottomBar()
           ],
         )
       )
+    );
+  }
+
+  Widget bottomBar(){
+    return Container(
+      width: screenWidth,
+      color: Colors.white,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(left: 40),
+              child: Text(_formatTime(elapsedTime, time), style: TextStyle(color: Colors.black54, fontSize: 30, fontWeight: FontWeight.bold),)
+          ),
+          _ClockButtons()
+        ],
+      ),
     );
   }
 
@@ -112,19 +117,22 @@ class _PomodoroState extends State<Pomodoro> with TickerProviderStateMixin {
         }
 
         double percent = elapsedTime / time;
-        return CircularPercentIndicator(
-            circularStrokeCap: CircularStrokeCap.round,
-            percent: percent,
-            animation: true,
-            animateFromLastPercent: true,
-            radius: 300.0,
-            lineWidth: 5.0,
-            progressColor: Colors.deepOrange,
-            center: Text(
-              _formatTime(elapsedTime, time),
-              style: TextStyle(
-                  color: Colors.white, fontSize: 50.0, fontWeight: FontWeight.w300),
-            )
+        return Padding(
+          padding: EdgeInsets.only(top: 100),
+          child: CircularPercentIndicator(
+              circularStrokeCap: CircularStrokeCap.round,
+              percent: percent,
+              animation: true,
+              animateFromLastPercent: true,
+              radius: 300.0,
+              lineWidth: 5.0,
+              progressColor: Colors.deepOrange,
+              center: Text(
+                _formatTime(elapsedTime, time),
+                style: TextStyle(
+                    color: Colors.white, fontSize: 50.0, fontWeight: FontWeight.w300),
+              )
+          ),
         );
       },
     );
@@ -132,7 +140,6 @@ class _PomodoroState extends State<Pomodoro> with TickerProviderStateMixin {
 
   Widget _ClockButtons() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[_StopButton(), _PalyAndPauseButton()],
     );
   }
@@ -140,8 +147,8 @@ class _PomodoroState extends State<Pomodoro> with TickerProviderStateMixin {
   Widget _StopButton() {
     return IconButton(
       iconSize: 50,
-      splashColor: Colors.white,
-      color: Colors.white,
+      splashColor: Colors.white30,
+      color: Colors.black54,
       icon: Icon(Icons.stop),
       onPressed: () => {
         setState(() {
@@ -159,11 +166,11 @@ class _PomodoroState extends State<Pomodoro> with TickerProviderStateMixin {
   Widget _PalyAndPauseButton() {
     return IconButton(
       iconSize: 50,
-      splashColor: Colors.white,
+      splashColor: Colors.white30,
       icon: AnimatedIcon(
           icon: AnimatedIcons.play_pause,
           progress: _animationController,
-          color: Colors.white),
+          color: Colors.black54),
       onPressed: () => {
         _HandleOnPressed(),
       },
@@ -214,31 +221,6 @@ class _PomodoroState extends State<Pomodoro> with TickerProviderStateMixin {
         }
       });
     });
-  }
-
-  Widget _SettingButtons() {
-    return BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      onTap: _onTab,
-      currentIndex: _currentIndex,
-      items: [_TodoButton(), _SetButton()],
-    );
-  }
-
-  BottomNavigationBarItem _TodoButton() {
-    return BottomNavigationBarItem(
-        icon: Icon(Icons.calendar_today),
-        title: Text('Write To Do',
-            style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold)));
-  }
-
-  BottomNavigationBarItem _SetButton() {
-    return BottomNavigationBarItem(
-        icon: Icon(Icons.settings),
-        title: Text(
-          'Setting',
-          style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
-        ));
   }
 
   void bottomSheet() {
@@ -295,15 +277,6 @@ class _PomodoroState extends State<Pomodoro> with TickerProviderStateMixin {
               controller: _eventController,
             ),
             actions: <Widget>[saveButton(), cancelButton()]));
-  }
-
-  _chooseTodoList() {
-    return showModalBottomSheet(
-        context: context,
-        builder: (context) {
-
-        }
-    );
   }
 
   Widget saveButton() {
