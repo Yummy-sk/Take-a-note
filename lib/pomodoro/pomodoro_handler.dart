@@ -8,11 +8,12 @@ import 'package:take_a_note_project/pomodoro/show_bottom_sheet/show_bottom_sheet
 class PomodoroHandler with ChangeNotifier {
   Timer timer;
   DateTime start;
-  static String startTime;
-  static String endTime;
+  String startTime;
+  String endTime;
   int count = 0;
   int elapsedTime = 0;
   bool isPlaying = false;
+  bool isDone = false;
   int pomodoroTime;
   int time;
   Pomodoro pomodoro;
@@ -20,7 +21,6 @@ class PomodoroHandler with ChangeNotifier {
   static final DateTime checkTime = DateTime.now();
   static final DateFormat formatter = DateFormat('MM월 dd일 H시 m분');
   final String formatted = formatter.format(checkTime);
-  ShowBottomSheet showBottomSheet = ShowBottomSheet(startTime, endTime);
 
   HandleOnPressed() {
     if (isPlaying) {
@@ -37,7 +37,7 @@ class PomodoroHandler with ChangeNotifier {
     timer.cancel();
     endTime = formatter.format(new DateTime.now());
     isPlaying = false;
-    //showBottomSheet.bottomSheet();
+    isDone = true;
     notifyListeners();
   }
 
@@ -49,6 +49,7 @@ class PomodoroHandler with ChangeNotifier {
   }
 
   StartTimer() {
+    isDone = false;
     startTime = formatted;
     start = new DateTime.now();
     start = elapsedTime > 0

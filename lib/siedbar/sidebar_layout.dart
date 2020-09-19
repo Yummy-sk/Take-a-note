@@ -11,6 +11,7 @@ import 'menu_item.dart';
 class SideBarLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    //final pomodoroHandler = Provider.of(context);
     return Scaffold(
       body: Stack(
         children: <Widget>[
@@ -20,7 +21,8 @@ class SideBarLayout extends StatelessWidget {
             else if (value.menuType == MenuType.calendar) { return MonthTable(); }
             else if (value.menuType == MenuType.todoList) { return TodoList(); }
             else if (value.menuType == MenuType.settings) { return SettingView(); }}),
-          SideBar()
+          SideBar(),
+          //pomodoroHandler.isDone ? bottomSheet(context) : null
         ],
       ),
     );

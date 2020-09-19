@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 class SettingDataHandler extends ChangeNotifier {
 
+
   Map<String, dynamic> selectedTimes = {
     "Pomodoro Setting": 15,
     "Rest Time Setting": 5,
