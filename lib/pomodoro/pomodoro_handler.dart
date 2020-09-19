@@ -66,4 +66,10 @@ class PomodoroHandler with ChangeNotifier {
     });
   }
 
+  ChangePomodoroStatus(bool status) {
+    isPlaying = status;
+    HandleOnPressed();
+    notifyListeners();
+  }
+
 }

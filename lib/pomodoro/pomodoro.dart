@@ -7,21 +7,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:take_a_note_project/pomodoro/pomodoro_handler.dart';
 import 'package:take_a_note_project/settings/setting_data_handler.dart';
 
-class Pomodoro extends StatefulWidget {
-@override
-_PomodoroState createState() => _PomodoroState();
-}
-
-class _PomodoroState extends State<Pomodoro> {
+class Pomodoro extends StatelessWidget {
 
 SharedPreferences prefs;
 SettingDataHandler settingDataHandler;
 PomodoroHandler pomodoroHandler;
-
 var screenWidth;
-//static final DateTime checkTime = DateTime.now();
-//static final DateFormat formatter = DateFormat('MM월 dd일 H시 m분');
-//final String formatted = formatter.format(checkTime);
 
 
 Future<int> _initPref() async {
@@ -143,10 +134,7 @@ Widget _ClockView() {
       color: Colors.black54,
       icon: Icon(Icons.play_arrow),
       onPressed: () => {
-        setState((){
-          pomodoroHandler.isPlaying = true;
-          pomodoroHandler.HandleOnPressed();
-        })
+        pomodoroHandler.ChangePomodoroStatus(true)
       },
     );
   }
@@ -158,110 +146,9 @@ Widget _ClockView() {
       color: Colors.black54,
       icon: Icon(Icons.pause),
       onPressed: () => {
-        setState((){
-          pomodoroHandler.isPlaying = false;
-          pomodoroHandler.HandleOnPressed();
-        })
+        pomodoroHandler.ChangePomodoroStatus(false)
       },
     );
   }
 
-
-//  bottomSheet() {
-//    showModalBottomSheet(
-//        context: context,
-//        builder: (context) {
-//          return Container(
-//            color: Color(0xFF737373),
-//            height: 170,
-//            child: Container(
-//              child: bottomSheetMenu(),
-//              decoration: BoxDecoration(
-//                  color: Theme.of(context).canvasColor,
-//                  borderRadius: BorderRadius.only(
-//                    topLeft: const Radius.circular(10),
-//                    topRight: const Radius.circular(10),
-//                  )),
-//            ),
-//          );
-//        });
-//  }
-//
-//  Column bottomSheetMenu() {
-//    return Column(
-//      children: <Widget>[
-//        ListTile(
-//          leading: Icon(Icons.create),
-//          title: Text('직접 작성합니다.'),
-//          onTap: () => {closePopup(), _writeWhatYouDid()},
-//        ),
-//        ListTile(
-//          leading: Icon(Icons.assignment_turned_in),
-//          title: Text('Todo List에서 선택합니다.'),
-//          onTap: () => {closePopup()},
-//        ),
-//        ListTile(
-//          leading: Icon(Icons.close),
-//          title: Text('기록하지 않겠습니다.'),
-//          onTap: () => {closePopup()},
-//        )
-//      ],
-//    );
-//  }
-//
-//  _writeWhatYouDid() {
-//    return showDialog(
-//        context: context,
-//        builder: (context) => AlertDialog(
-//            title: Center(
-//                child: Text(pomodoroHandler.startTime +
-//                    " ~ " +
-//                    pomodoroHandler.endTime +
-//                    " 동안 무엇을 하셨나요?")),
-//            shape: RoundedRectangleBorder(
-//                borderRadius: BorderRadius.all((Radius.circular(20.0)))),
-//            content: TextField(
-//              controller: pomodoroHandler.eventController,
-//            ),
-//            actions: <Widget>[saveButton(), cancelButton()]));
-//  }
-//
-//  Widget saveButton() {
-//    return RaisedButton(
-//      color: Colors.white,
-//      shape: RoundedRectangleBorder(
-//        borderRadius: BorderRadius.circular(18.0),
-//        side: BorderSide(color: Colors.lightBlue),
-//      ),
-//      child: Text(
-//        "Save",
-//        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.lightBlue),
-//      ),
-//      onPressed: () {
-//        closePopup();
-//      },
-//    );
-//  }
-//
-//  Widget cancelButton() {
-//    return RaisedButton(
-//      color: Colors.white,
-//      shape: RoundedRectangleBorder(
-//        borderRadius: BorderRadius.circular(18.0),
-//        side: BorderSide(color: Colors.deepOrangeAccent),
-//      ),
-//      child: Text(
-//        "Cancel",
-//        style: TextStyle(
-//            fontWeight: FontWeight.bold, color: Colors.deepOrangeAccent),
-//      ),
-//      onPressed: () {
-//        closePopup();
-//      },
-//    );
-//  }
-//
-//  void closePopup() {
-//    Navigator.pop(context);
-//  }
 }
