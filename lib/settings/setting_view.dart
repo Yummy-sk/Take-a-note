@@ -10,10 +10,10 @@ class SettingView extends StatefulWidget {
 }
 
 class _SettingViewState extends State<SettingView> {
-  var pomodoroSetting = Setting("Pomodoro Setting", [ 15, 30, 60, 90, 120]);
-  var restTimeSetting = Setting("Rest Time Setting", [ 5, 10, 15, 20, 25]);
-  var longRestTimeSetting = Setting("Long Rest Time Setting",  [ 10, 15, 20, 25, 30]);
-  var termOfRestingTimeSetting = Setting("Term of Resting Time Setting", [ 3, 4, 5, 6, 7]);
+  var pomodoroSetting = Setting("Pomodoro Setting", [ 15, 30, 60, 90, 120], " 분");
+  var restTimeSetting = Setting("Rest Time Setting", [ 5, 10, 15, 20, 25], " 분");
+  var longRestTimeSetting = Setting("Long Rest Time Setting",  [ 10, 15, 20, 25, 30], " 분");
+  var termOfRestingTimeSetting = Setting("Term of Resting Time Setting", [ 3, 4, 5, 6, 7], " 번");
   SettingDataHandler settingDataHandler;
   SharedPreferences prefs;
   
@@ -24,8 +24,7 @@ class _SettingViewState extends State<SettingView> {
 
   @override
   Widget build(BuildContext context) {
-    final setting = Provider.of<SettingDataHandler>(context, listen: false);
-    settingDataHandler = setting;
+    settingDataHandler = Provider.of<SettingDataHandler>(context, listen: false);
     return Scaffold(
       body: Container(
         padding: EdgeInsets.all(10),
@@ -51,15 +50,15 @@ class _SettingViewState extends State<SettingView> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          _settingMinute(pomodoroSetting, "Pomodoro Setting"),
-          _settingMinute(restTimeSetting, "Rest Time Setting"),
-          _settingMinute(longRestTimeSetting, "Long Rest Time Setting"),
-          _settingTerm(termOfRestingTimeSetting, settingDataHandler.selectedTimes["Term of Resting Time Setting"]),
+          _settingTime(pomodoroSetting),
+          _settingTime(restTimeSetting),
+          _settingTime(longRestTimeSetting),
+          _settingTime(termOfRestingTimeSetting),
         ],
       ),
     );
   }
-  Widget _settingMinute(Setting setting, String selectedColumn){
+  Widget _settingTime(Setting setting){
     return ListTile(
       title: Text(setting.settingType, style: TextStyle(fontWeight: FontWeight.bold)),
       subtitle: DropdownButtonHideUnderline(
@@ -67,37 +66,11 @@ class _SettingViewState extends State<SettingView> {
           elevation: 10,
           autofocus: true,
           isExpanded: true,
-          value: settingDataHandler.selectedTimes[selectedColumn],
+          value: settingDataHandler.selectedTimes[setting.settingType],
           items: setting.settingValues.map((value) {
             return DropdownMenuItem(
               value: value,
-              child: Text(value.toString() + " 분"),
-            );
-          },
-          ).toList(),
-          onChanged: (value) {
-            setState(() {
-              settingDataHandler.setTime(setting.settingType, value);
-              _changedTime();
-            });
-          },
-        ),
-      ),
-    );
-  }
-  Widget _settingTerm(Setting setting, int selectedValue){
-    return ListTile(
-      title: Text(setting.settingType, style: TextStyle(fontWeight: FontWeight.bold)),
-      subtitle: DropdownButtonHideUnderline(
-        child: DropdownButton(
-          elevation: 10,
-          autofocus: true,
-          isExpanded: true,
-          value: selectedValue,
-          items: setting.settingValues.map((value) {
-            return DropdownMenuItem(
-              value: value,
-              child: Text(value.toString() + " 번"),
+              child: Text(value.toString() + setting.end),
             );
           },
           ).toList(),
@@ -109,21 +82,16 @@ class _SettingViewState extends State<SettingView> {
         ),
       ),
     );
-  }
-
-  Future<void> _changedTime() async {
-    prefs = await SharedPreferences.getInstance();
-    int currentPomodoroTime = settingDataHandler.selectedTimes["Pomodoro Setting"];
-    print(currentPomodoroTime);
-    await prefs.setInt('timeData', currentPomodoroTime);
   }
 }
 
 class Setting {
   String settingType;
   List settingValues;
-  Setting(String settingType,  List settingValues){
+  String end;
+  Setting(String settingType,  List settingValues, String end){
     this.settingType = settingType;
     this.settingValues = settingValues;
+    this.end = end;
   }
 }

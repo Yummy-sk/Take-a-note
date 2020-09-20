@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:take_a_note_project/pomodoro/pomodoro.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:take_a_note_project/pomodoro/show_bottom_sheet/show_bottom_sheet.dart';
 
 class PomodoroHandler with ChangeNotifier {
@@ -12,12 +13,13 @@ class PomodoroHandler with ChangeNotifier {
   String endTime;
   int count = 0;
   int elapsedTime = 0;
+  int checkRestTime = 0;
   bool isPlaying = false;
-  bool isDone = false;
-  int pomodoroTime;
-  int time;
+  bool isRestTime = false;
+  bool isLongRestTime = false;
   Pomodoro pomodoro;
   BuildContext context;
+  SharedPreferences prefs;
   static final DateTime checkTime = DateTime.now();
   static final DateFormat formatter = DateFormat('MM월 dd일 H시 m분');
   final String formatted = formatter.format(checkTime);
@@ -26,9 +28,9 @@ class PomodoroHandler with ChangeNotifier {
     this.context = context;
   }
 
-  HandleOnPressed() {
+  HandleOnPressed(time) {
     if (isPlaying) {
-      StartTimer();
+      StartTimer(time);
     } else {
       timer.cancel();
     }
@@ -36,12 +38,11 @@ class PomodoroHandler with ChangeNotifier {
   }
 
   ResetTimer() {
-    time = pomodoroTime * 60;
     elapsedTime = 0;
     timer.cancel();
     endTime = formatter.format(new DateTime.now());
     isPlaying = false;
-    bottomSheet(context, startTime, endTime);
+    isRestTime == false ? bottomSheet(context, startTime, endTime) : null;
     notifyListeners();
   }
 
@@ -52,8 +53,7 @@ class PomodoroHandler with ChangeNotifier {
     return first + ":" + latter;
   }
 
-  StartTimer() {
-    isDone = false;
+  StartTimer(time) {
     startTime = formatted;
     start = new DateTime.now();
     start = elapsedTime > 0
@@ -64,16 +64,23 @@ class PomodoroHandler with ChangeNotifier {
         elapsedTime = DateTime.now().difference(start).inSeconds;
         print(isPlaying);
       } else {
-          ResetTimer();
           ++count;
+          ++checkRestTime;
+          if (isRestTime) { ResetTimer(); }
+        if (checkRestTime == 1) {
+          isRestTime = true;
+        }else {
+          isRestTime = false;
+          checkRestTime = 0;
+        }
       }
       notifyListeners();
     });
   }
 
-  ChangePomodoroStatus(bool status) {
+  ChangePomodoroStatus(bool status, int time) {
     isPlaying = status;
-    HandleOnPressed();
+    HandleOnPressed(time);
     notifyListeners();
   }
 

@@ -10,20 +10,12 @@ import 'package:take_a_note_project/siedbar/sidebar_layout.dart';
 void main() => runApp(Main());
 
 class Main extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<SettingDataHandler>(create: (context) => SettingDataHandler(),),
-        ChangeNotifierProvider<MenuItem>(create: (context) => MenuItem(MenuType.pomodoro),),
-//        ChangeNotifierProvider<PomodoroHandler>(create: (context) => PomodoroHandler(context),),
-      ],
-      child: MaterialApp(
+    return MaterialApp(
         debugShowCheckedModeBanner: false,
         home: SideBarLayout(),
-      ),
-    );
+      );
   }
 }
 
