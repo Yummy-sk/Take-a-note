@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:take_a_note_project/pomodoro/pomodoro.dart';
 import 'package:take_a_note_project/pomodoro/show_bottom_sheet/show_bottom_sheet.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PomodoroHandler with ChangeNotifier {
   Timer timer;
@@ -14,10 +15,9 @@ class PomodoroHandler with ChangeNotifier {
   int elapsedTime = 0;
   bool isPlaying = false;
   bool isDone = false;
-  int pomodoroTime = 15;
-  int time = 15 * 60;
   Pomodoro pomodoro;
   BuildContext context;
+  SharedPreferences prefs;
   static final DateTime checkTime = DateTime.now();
   static final DateFormat formatter = DateFormat('MM월 dd일 H시 m분');
   final String formatted = formatter.format(checkTime);
@@ -26,9 +26,9 @@ class PomodoroHandler with ChangeNotifier {
     this.context = context;
   }
 
-  HandleOnPressed() {
+  HandleOnPressed(time) {
     if (isPlaying) {
-      StartTimer();
+      StartTimer(time);
     } else {
       timer.cancel();
     }
@@ -36,7 +36,6 @@ class PomodoroHandler with ChangeNotifier {
   }
 
   ResetTimer() {
-    time = pomodoroTime * 60;
     elapsedTime = 0;
     timer.cancel();
     endTime = formatter.format(new DateTime.now());
@@ -52,7 +51,7 @@ class PomodoroHandler with ChangeNotifier {
     return first + ":" + latter;
   }
 
-  StartTimer() {
+  StartTimer(time) {
     isDone = false;
     startTime = formatted;
     start = new DateTime.now();
@@ -71,9 +70,9 @@ class PomodoroHandler with ChangeNotifier {
     });
   }
 
-  ChangePomodoroStatus(bool status) {
+  ChangePomodoroStatus(bool status, int time) {
     isPlaying = status;
-    HandleOnPressed();
+    HandleOnPressed(time);
     notifyListeners();
   }
 
