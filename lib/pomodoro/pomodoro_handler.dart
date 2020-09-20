@@ -14,8 +14,8 @@ class PomodoroHandler with ChangeNotifier {
   int elapsedTime = 0;
   bool isPlaying = false;
   bool isDone = false;
-  int pomodoroTime;
-  int time;
+  int pomodoroTime = 15;
+  int time = 15 * 60;
   Pomodoro pomodoro;
   BuildContext context;
   static final DateTime checkTime = DateTime.now();

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:take_a_note_project/enum.dart';
-import 'package:take_a_note_project/navigation_provider/navigation_provider.dart';
 
 class MenuItem with ChangeNotifier{
   MenuType menuType;

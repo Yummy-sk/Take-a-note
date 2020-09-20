@@ -5,7 +5,6 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:take_a_note_project/pomodoro/pomodoro_handler.dart';
-import 'package:take_a_note_project/pomodoro/show_bottom_sheet/show_bottom_sheet.dart';
 import 'package:take_a_note_project/settings/setting_data_handler.dart';
 
 class Pomodoro extends StatelessWidget {
