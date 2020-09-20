@@ -17,7 +17,7 @@ class Main extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<SettingDataHandler>(create: (context) => SettingDataHandler(),),
         ChangeNotifierProvider<MenuItem>(create: (context) => MenuItem(MenuType.pomodoro),),
-        ChangeNotifierProvider<PomodoroHandler>(create: (context) => PomodoroHandler(),),
+//        ChangeNotifierProvider<PomodoroHandler>(create: (context) => PomodoroHandler(context),),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

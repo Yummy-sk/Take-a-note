@@ -22,6 +22,10 @@ class PomodoroHandler with ChangeNotifier {
   static final DateFormat formatter = DateFormat('MM월 dd일 H시 m분');
   final String formatted = formatter.format(checkTime);
 
+  PomodoroHandler(BuildContext context){
+    this.context = context;
+  }
+
   HandleOnPressed() {
     if (isPlaying) {
       StartTimer();
@@ -37,7 +41,7 @@ class PomodoroHandler with ChangeNotifier {
     timer.cancel();
     endTime = formatter.format(new DateTime.now());
     isPlaying = false;
-    isDone = true;
+    bottomSheet(context, startTime, endTime);
     notifyListeners();
   }
 
