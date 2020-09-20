@@ -64,8 +64,8 @@ class PomodoroHandler with ChangeNotifier {
         elapsedTime = DateTime.now().difference(start).inSeconds;
         print(isPlaying);
       } else {
-          ResetTimer();
-          ++count;
+        ResetTimer();
+        ++count;
       }
       notifyListeners();
     });

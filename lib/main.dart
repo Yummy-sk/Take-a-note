@@ -13,6 +13,7 @@ class Main extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+<<<<<<< Updated upstream
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<SettingDataHandler>(create: (context) => SettingDataHandler(),),
@@ -20,9 +21,11 @@ class Main extends StatelessWidget {
 //        ChangeNotifierProvider<PomodoroHandler>(create: (context) => PomodoroHandler(context),),
       ],
       child: MaterialApp(
+=======
+    return MaterialApp(
+>>>>>>> Stashed changes
         debugShowCheckedModeBanner: false,
         home: SideBarLayout(),
-      ),
     );
   }
 }
