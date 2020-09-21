@@ -36,7 +36,7 @@ class SideBarLayout extends StatelessWidget {
               SideBar(),
             ],
           ),
-        )
+        ),
     );
   }
 }

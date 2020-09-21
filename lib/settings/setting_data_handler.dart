@@ -1,12 +1,10 @@
+import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingDataHandler extends ChangeNotifier {
-
   SharedPreferences prefs;
-
   Map<String, int> selectedTimes = {
     "Pomodoro Setting": 15,
     "Rest Time Setting": 5,
@@ -24,7 +22,6 @@ class SettingDataHandler extends ChangeNotifier {
     selectedTimes.forEach((key, value) {
       selectedTimes[key] = prefs.getInt(key);
     });
-
     notifyListeners(); //바로 여기
     return 0;
   }
@@ -37,6 +34,10 @@ class SettingDataHandler extends ChangeNotifier {
 
   getTime(key){
     return selectedTimes[key] * 60;
+
+
+  getTermOfRestingTimeSetting(){
+    return selectedTimes['Term of Resting Time Setting'];
   }
 
   Future<void> _changedTime(String key, int value) async {

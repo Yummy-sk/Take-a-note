@@ -72,7 +72,7 @@ bottomSheet(BuildContext context, String startTime, String endTime) {
           });
 }
 
-  Widget actionButton(colors, text, context) {
+  Widget actionButton(Color colors, Text text, context) {
     return RaisedButton(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(18.0),
