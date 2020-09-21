@@ -4,7 +4,6 @@ import 'package:take_a_note_project/calender_view/month_table.dart';
 import 'package:take_a_note_project/enum.dart';
 import 'package:take_a_note_project/pomodoro/pomodoro.dart';
 import 'package:take_a_note_project/pomodoro/pomodoro_handler.dart';
-import 'package:take_a_note_project/pomodoro/show_bottom_sheet/show_bottom_sheet.dart';
 import 'package:take_a_note_project/pomodoro/todoList/todoList.dart';
 import 'package:take_a_note_project/settings/setting_data_handler.dart';
 import 'package:take_a_note_project/settings/setting_view.dart';
@@ -16,23 +15,28 @@ class SideBarLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
-      ChangeNotifierProvider<SettingDataHandler>(create: (context) => SettingDataHandler(),),
-      ChangeNotifierProvider<MenuItem>(create: (context) => MenuItem(MenuType.pomodoro),),
-      ChangeNotifierProvider<PomodoroHandler>(create: (context) => PomodoroHandler(context),),
-      ],
-      child: Scaffold(
-        body: Stack(
-          children: <Widget>[
-            Consumer<MenuItem>(
-              builder: (BuildContext context, MenuItem value, Widget child){
-              if(value.menuType == MenuType.pomodoro) { return Pomodoro(); }
-              else if (value.menuType == MenuType.calendar) { return MonthTable(); }
-              else if (value.menuType == MenuType.todoList) { return TodoList(); }
-              else if (value.menuType == MenuType.settings) { return SettingView(); }}),
-            SideBar(),
-          ],
+          ChangeNotifierProvider<SettingDataHandler>(create: (context) => SettingDataHandler(),),
+          ChangeNotifierProvider<MenuItem>(create: (context) => MenuItem(MenuType.pomodoro),),
+          ChangeNotifierProvider<PomodoroHandler>(create: (context) => PomodoroHandler(context),),
+        ],
+        child: Scaffold(
+          body: Stack(
+            children: <Widget>[
+              Consumer<MenuItem>(
+                  builder: (BuildContext context, MenuItem value, Widget child){
+                    if(value.menuType == MenuType.pomodoro) { return Pomodoro(); }
+                    else if (value.menuType == MenuType.calendar) { return MonthTable(); }
+                    else if (value.menuType == MenuType.todoList) { return TodoList(); }
+                    else if (value.menuType == MenuType.settings) { return SettingView(); }
+                    else {
+                      return Text("none");
+                    }
+                  }
+                  ),
+              SideBar(),
+            ],
+          ),
         ),
-      ),
     );
   }
 }

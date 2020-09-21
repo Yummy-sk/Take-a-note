@@ -5,7 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingDataHandler extends ChangeNotifier {
   SharedPreferences prefs;
-
   Map<String, int> selectedTimes = {
     "Pomodoro Setting": 15,
     "Rest Time Setting": 5,
@@ -23,7 +22,7 @@ class SettingDataHandler extends ChangeNotifier {
     selectedTimes.forEach((key, value) {
       selectedTimes[key] = prefs.getInt(key);
     });
-
+    notifyListeners(); //바로 여기
     return 0;
   }
 
@@ -33,17 +32,9 @@ class SettingDataHandler extends ChangeNotifier {
     notifyListeners();
   }
 
-  getPomodoroTime(){
-    return selectedTimes['Pomodoro Setting'] * 60;
-  }
+  getTime(key){
+    return selectedTimes[key] * 60;
 
-  getRestTime(){
-    return selectedTimes['Rest Time Setting'] * 60;
-  }
-
-  getLongRestTime(){
-    return selectedTimes['Long Rest Time Setting'] * 60;
-  }
 
   getTermOfRestingTimeSetting(){
     return selectedTimes['Term of Resting Time Setting'];
@@ -53,5 +44,4 @@ class SettingDataHandler extends ChangeNotifier {
     prefs = await SharedPreferences.getInstance();
     await prefs.setInt(key, value);
   }
-
 }

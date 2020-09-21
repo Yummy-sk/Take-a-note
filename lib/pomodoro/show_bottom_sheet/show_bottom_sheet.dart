@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:take_a_note_project/pomodoro/pomodoro_handler.dart';
 
 bottomSheet(BuildContext context, String startTime, String endTime) {
   TextEditingController textEditingController;
@@ -76,7 +74,6 @@ bottomSheet(BuildContext context, String startTime, String endTime) {
 
   Widget actionButton(Color colors, Text text, context) {
     return RaisedButton(
-      color: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(18.0),
         side: BorderSide(color: colors),

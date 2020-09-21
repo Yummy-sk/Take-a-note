@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:take_a_note_project/settings/setting_data_handler.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingView extends StatefulWidget {
   @override
@@ -15,7 +14,6 @@ class _SettingViewState extends State<SettingView> {
   var longRestTimeSetting = Setting("Long Rest Time Setting",  [ 10, 15, 20, 25, 30], " 분");
   var termOfRestingTimeSetting = Setting("Term of Resting Time Setting", [ 3, 4, 5, 6, 7], " 번");
   SettingDataHandler settingDataHandler;
-  SharedPreferences prefs;
   
   @override
   void initState() {
@@ -59,6 +57,7 @@ class _SettingViewState extends State<SettingView> {
     );
   }
   Widget _settingTime(Setting setting){
+
     return ListTile(
       title: Text(setting.settingType, style: TextStyle(fontWeight: FontWeight.bold)),
       subtitle: DropdownButtonHideUnderline(
@@ -94,4 +93,5 @@ class Setting {
     this.settingValues = settingValues;
     this.end = end;
   }
+
 }

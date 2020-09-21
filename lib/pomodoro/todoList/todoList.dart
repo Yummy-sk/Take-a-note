@@ -59,7 +59,7 @@ class _TodoListState extends State<TodoList> {
             padding: EdgeInsets.only(top: 10),
             child: Column(
               children: <Widget>[
-                _TableCalendar(),
+                _tableCalendar(),
                 ListView.builder(
                   scrollDirection: Axis.vertical,
                   shrinkWrap: true,
@@ -110,7 +110,7 @@ class _TodoListState extends State<TodoList> {
       ),
       );
   }
-  Widget _TableCalendar(){
+  Widget _tableCalendar(){
     return TableCalendar( // Calendar Style
       initialCalendarFormat: CalendarFormat.week,
       events: _events,

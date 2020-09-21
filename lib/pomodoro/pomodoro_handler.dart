@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:take_a_note_project/pomodoro/pomodoro.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:take_a_note_project/pomodoro/show_bottom_sheet/show_bottom_sheet.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PomodoroHandler with ChangeNotifier {
   Timer timer;
@@ -15,8 +16,7 @@ class PomodoroHandler with ChangeNotifier {
   int elapsedTime = 0;
   int checkRestTime = 0;
   bool isPlaying = false;
-  bool isRestTime = false;
-  bool isLongRestTime = false;
+  bool isDone = false;
   Pomodoro pomodoro;
   BuildContext context;
   SharedPreferences prefs;
@@ -28,16 +28,7 @@ class PomodoroHandler with ChangeNotifier {
     this.context = context;
   }
 
-  HandleOnPressed(time) {
-    if (isPlaying) {
-      StartTimer(time);
-    } else {
-      timer.cancel();
-    }
-    notifyListeners();
-  }
-
-  ResetTimer() {
+  resetTimer() {
     elapsedTime = 0;
     timer.cancel();
     endTime = formatter.format(new DateTime.now());
@@ -46,14 +37,9 @@ class PomodoroHandler with ChangeNotifier {
     notifyListeners();
   }
 
-  formatTime(int now, int duration) {
-    String first = ((duration - now) ~/ 60).toString();
-    int seconds = ((duration - now) % 60);
-    String latter = (seconds < 10 ? "0" : "") + seconds.toString();
-    return first + ":" + latter;
-  }
 
-  StartTimer(time) {
+  startTimer(time) {
+    isDone = false;
     startTime = formatted;
     start = new DateTime.now();
     start = elapsedTime > 0
@@ -64,23 +50,21 @@ class PomodoroHandler with ChangeNotifier {
         elapsedTime = DateTime.now().difference(start).inSeconds;
         print(isPlaying);
       } else {
-          ++count;
-          ++checkRestTime;
-          if (isRestTime) { ResetTimer(); }
-        if (checkRestTime == 1) {
-          isRestTime = true;
-        }else {
-          isRestTime = false;
-          checkRestTime = 0;
-        }
+
+        resetTimer();
+        ++count;
       }
       notifyListeners();
     });
   }
 
-  ChangePomodoroStatus(bool status, int time) {
+  changeStatus(bool status, int time) {
     isPlaying = status;
-    HandleOnPressed(time);
+    if (isPlaying) {
+      startTimer(time);
+    } else {
+      timer.cancel();
+    }
     notifyListeners();
   }
 
