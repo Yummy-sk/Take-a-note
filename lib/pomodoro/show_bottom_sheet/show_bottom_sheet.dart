@@ -72,13 +72,13 @@ bottomSheet(BuildContext context, String startTime, String endTime) {
           });
 }
 
-  Widget actionButton(Colors, Text, context) {
+  Widget actionButton(colors, text, context) {
     return RaisedButton(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(18.0),
-        side: BorderSide(color: Colors),
+        side: BorderSide(color: colors),
       ),
-      child: Text,
+      child: text,
       onPressed: () {
         Navigator.pop(context);
       },

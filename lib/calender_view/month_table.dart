@@ -12,14 +12,14 @@ class _MonthTableState extends State<MonthTable> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _Calender(),
+      body: _calender(),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.create),
         onPressed: (){},
       ),
     );
   }
-  Widget _Calender() {
+  Widget _calender() {
     return SfCalendar(
       view: CalendarView.month,
       showNavigationArrow: true,
@@ -31,7 +31,7 @@ class _MonthTableState extends State<MonthTable> {
           appointmentDisplayCount: 2,
           appointmentDisplayMode: MonthAppointmentDisplayMode.appointment,
           navigationDirection: MonthNavigationDirection.horizontal,
-          agendaStyle: _ShowAgendaStyle()
+          agendaStyle: _showAgendaStyle()
       ), // 어젠다 보여주기
     );
   }
@@ -47,7 +47,7 @@ class _MonthTableState extends State<MonthTable> {
     return meetings;
   }
 
-  _ShowAgendaStyle() {
+  _showAgendaStyle() {
     return AgendaStyle(
       backgroundColor: Colors.transparent,
       appointmentTextStyle: TextStyle(

@@ -26,16 +26,7 @@ class PomodoroHandler with ChangeNotifier {
     this.context = context;
   }
 
-  HandleOnPressed(time) {
-    if (isPlaying) {
-      StartTimer(time);
-    } else {
-      timer.cancel();
-    }
-    notifyListeners();
-  }
-
-  ResetTimer() {
+  resetTimer() {
     elapsedTime = 0;
     timer.cancel();
     endTime = formatter.format(new DateTime.now());
@@ -44,14 +35,7 @@ class PomodoroHandler with ChangeNotifier {
     notifyListeners();
   }
 
-  formatTime(int now, int duration) {
-    String first = ((duration - now) ~/ 60).toString();
-    int seconds = ((duration - now) % 60);
-    String latter = (seconds < 10 ? "0" : "") + seconds.toString();
-    return first + ":" + latter;
-  }
-
-  StartTimer(time) {
+  startTimer(time) {
     isDone = false;
     startTime = formatted;
     start = new DateTime.now();
@@ -63,16 +47,20 @@ class PomodoroHandler with ChangeNotifier {
         elapsedTime = DateTime.now().difference(start).inSeconds;
         print(isPlaying);
       } else {
-        ResetTimer();
+        resetTimer();
         ++count;
       }
       notifyListeners();
     });
   }
 
-  ChangePomodoroStatus(bool status, int time) {
+  changeStatus(bool status, int time) {
     isPlaying = status;
-    HandleOnPressed(time);
+    if (isPlaying) {
+      startTimer(time);
+    } else {
+      timer.cancel();
+    }
     notifyListeners();
   }
 

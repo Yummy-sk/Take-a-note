@@ -25,6 +25,7 @@ class SettingDataHandler extends ChangeNotifier {
       selectedTimes[key] = prefs.getInt(key);
     });
 
+    notifyListeners(); //바로 여기
     return 0;
   }
 
@@ -34,8 +35,8 @@ class SettingDataHandler extends ChangeNotifier {
     notifyListeners();
   }
 
-  getPomodoroTime(){
-    return selectedTimes['Pomodoro Setting'] * 60;
+  getTime(key){
+    return selectedTimes[key] * 60;
   }
 
   Future<void> _changedTime(String key, int value) async {

@@ -7,58 +7,67 @@ import 'package:take_a_note_project/settings/setting_data_handler.dart';
 
 class Pomodoro extends StatelessWidget {
 
-SettingDataHandler setting;
-PomodoroHandler pomodoroHandler;
-var screenWidth;
+  double screenWidth;
+  PomodoroHandler pomo;
+  SettingDataHandler setting;
+  int elapsedTime;
+  int pomoTime;
 
-@override
-Widget build(BuildContext context) {
-  screenWidth = MediaQuery.of(context).size.width;
-  setting = Provider.of<SettingDataHandler>(context);
-  pomodoroHandler = Provider.of<PomodoroHandler>(context);
+  @override
+  Widget build(BuildContext context) {
+    screenWidth = MediaQuery.of(context).size.width;
+    pomo = Provider.of(context);
+    setting = Provider.of(context);
+    
+    elapsedTime = pomo.elapsedTime;
+    pomoTime = setting.getTime('Pomodoro Setting');
 
-  return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          color: Colors.black54,
-        ),
-        width: double.infinity,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            _ClockView(),
-            bottomBar(),
-        ],
+    return Scaffold(
+        body: Container(
+          decoration: BoxDecoration(
+            color: Colors.black54,
+          ),
+          width: double.infinity,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              _clockView(),
+              bottomBar(),
+          ],
+        )
       )
-    )
-  );
-}
+    );
+  }
 
-Widget bottomBar(){
-  return Container(
-    width: screenWidth,
-    color: Colors.white,
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.only(left: 40),
-            child: Text(
-              pomodoroHandler.formatTime(
-                pomodoroHandler.elapsedTime,
-                setting.getPomodoroTime(),
-              ),
-              style: TextStyle(color: Colors.black54, fontSize: 30, fontWeight: FontWeight.bold),
-            )
-        ),
-        ClockButtons(),
-      ],
-    ),
-  );
-}
+  String formatTime(int now, int duration) {
+    String first = ((duration - now) ~/ 60).toString();
+    int seconds = ((duration - now) % 60);
+    String latter = (seconds < 10 ? "0" : "") + seconds.toString();
+    return first + ":" + latter;
+  }
 
-Widget _ClockView() {
-    double percent = pomodoroHandler.elapsedTime / setting.getPomodoroTime();
+  Widget bottomBar(){
+    return Container(
+      width: screenWidth,
+      color: Colors.white,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(left: 40),
+              child: Text(
+                formatTime(elapsedTime, pomoTime),
+                style: TextStyle(color: Colors.black54, fontSize: 30, fontWeight: FontWeight.bold),
+              )
+          ),
+          clockButtons(),
+        ],
+      ),
+    );
+  }
+
+  Widget _clockView() {
+    double percent = elapsedTime / pomoTime;
     return Padding(
       padding: EdgeInsets.only(top: 100),
       child: CircularPercentIndicator(
@@ -70,7 +79,7 @@ Widget _ClockView() {
           lineWidth: 5.0,
           progressColor: Colors.deepOrange,
           center: Text(
-            pomodoroHandler.formatTime(pomodoroHandler.elapsedTime, setting.getPomodoroTime()),
+            formatTime(elapsedTime, pomoTime),
             style: TextStyle(
                 color: Colors.white, fontSize: 50.0, fontWeight: FontWeight.w300),
           )
@@ -78,49 +87,26 @@ Widget _ClockView() {
     );
 }
 
-  Widget ClockButtons() {
+  Widget clockButtons() {
     return Row(
       children: <Widget>[
-        StopButton(),
-        pomodoroHandler.isPlaying == true ?  PauseButton() : PlayButton(),
+        iconButton(Icons.stop, pomo.resetTimer),
+        pomo.isPlaying ?
+          iconButton(Icons.pause, pomo.changeStatus(false, pomoTime))
+          : iconButton(Icons.play_arrow, pomo.changeStatus(true, pomoTime)),
       ],
     );
   }
 
-  Widget StopButton() {
+  Widget iconButton(icon, onPressedFunc) {
     return IconButton(
       iconSize: 50,
       splashColor: Colors.white30,
       color: Colors.black54,
-      icon: Icon(Icons.stop),
+      icon: Icon(icon),
       onPressed: () => {
-        pomodoroHandler.ResetTimer(),
+        onPressedFunc()
       },
     );
   }
-
-  Widget PlayButton(){
-    return IconButton(
-      iconSize: 50,
-      splashColor: Colors.white30,
-      color: Colors.black54,
-      icon: Icon(Icons.play_arrow),
-      onPressed: () => {
-        pomodoroHandler.ChangePomodoroStatus(true, setting.getPomodoroTime())
-      },
-    );
-  }
-
-  Widget PauseButton() {
-    return IconButton(
-      iconSize: 50,
-      splashColor: Colors.white30,
-      color: Colors.black54,
-      icon: Icon(Icons.pause),
-      onPressed: () => {
-        pomodoroHandler.ChangePomodoroStatus(false, setting.getPomodoroTime())
-      },
-    );
-  }
-
 }
