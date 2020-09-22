@@ -42,7 +42,7 @@ class PomodoroHandler with ChangeNotifier {
     timer.cancel();
     endTime = formatter.format(new DateTime.now());
     isPlaying = false;
-    isRestTime == false ? bottomSheet(context, startTime, endTime) : null;
+    bottomSheet(context, startTime, endTime);
     notifyListeners();
   }
 
@@ -61,18 +61,11 @@ class PomodoroHandler with ChangeNotifier {
         : start;
     timer = Timer.periodic(Duration(seconds: 1), (timer) {
       if (time > elapsedTime) {
-        elapsedTime = DateTime.now().difference(start).inSeconds;
-        print(isPlaying);
+        elapsedTime =   DateTime.now().difference(start).inSeconds;
       } else {
           ++count;
-          ++checkRestTime;
-          if (isRestTime) { ResetTimer(); }
-        if (checkRestTime == 1) {
-          isRestTime = true;
-        }else {
-          isRestTime = false;
-          checkRestTime = 0;
-        }
+        isRestTime ? isRestTime = false : isRestTime = true;
+        ResetTimer();
       }
       notifyListeners();
     });
@@ -83,5 +76,4 @@ class PomodoroHandler with ChangeNotifier {
     HandleOnPressed(time);
     notifyListeners();
   }
-
 }

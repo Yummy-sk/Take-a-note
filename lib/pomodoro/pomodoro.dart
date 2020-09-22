@@ -125,12 +125,11 @@ Widget _ClockView() {
   }
 
   int CheckPomodoroTime(){
-    if (pomodoroHandler.isRestTime == true){
-      return pomodoroHandler.count % setting.getTermOfRestingTimeSetting() == 0 ? setting.getLongRestTime() : setting.getRestTime();
-    }
-    else {
-      return setting.getPomodoroTime();
-    }
+    return pomodoroHandler.isRestTime ? RestTime() : setting.getPomodoroTime();
+  }
+
+  int RestTime(){
+    return pomodoroHandler.count % setting.getTermOfRestingTimeSetting() == 0 ? setting.getLongRestTime() : setting.getRestTime();
   }
 
 }
