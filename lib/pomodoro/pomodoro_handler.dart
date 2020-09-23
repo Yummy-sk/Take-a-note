@@ -63,12 +63,17 @@ class PomodoroHandler with ChangeNotifier {
       if (time > elapsedTime) {
         elapsedTime =   DateTime.now().difference(start).inSeconds;
       } else {
-          ++count;
-        isRestTime ? isRestTime = false : isRestTime = true;
+        AfterPomodoroDone();
         ResetTimer();
       }
       notifyListeners();
     });
+  }
+
+  AfterPomodoroDone(){
+    print(count);
+    ++count;
+    isRestTime ? isRestTime = false : isRestTime = true;
   }
 
   ChangePomodoroStatus(bool status, int time) {

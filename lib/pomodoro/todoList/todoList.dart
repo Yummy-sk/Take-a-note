@@ -1,8 +1,8 @@
-import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:take_a_note_project/pomodoro/todoList/todoList_handler.dart';
 
 class TodoList extends StatefulWidget {
   @override
@@ -11,48 +11,24 @@ class TodoList extends StatefulWidget {
 
 class _TodoListState extends State<TodoList> {
 
-  CalendarController _controller;
-  Map<DateTime, List<dynamic>> _events; // DateTime과 동적 타입을 저장하는 맵
-  TextEditingController _eventController; // 문자열 조작을 위한 컨트롤러
-  SharedPreferences prefs; // key-value 형태의 Data를 디스크에 저장
-  List<dynamic> _selectedEvents;
-
-  Map<String, dynamic> encodedMap(Map<DateTime, dynamic> map) {
-    Map<String, dynamic> newMap = {};
-    map.forEach((key, value) {newMap[key.toString()] = map[key];});
-    return newMap;
-  }
-
-  Map<DateTime,  dynamic> decodedMap(Map<String, dynamic> map) {
-    Map<DateTime, dynamic> newMap = {};
-    map.forEach((key, value) {newMap[DateTime.parse(key)] = map[key];});
-    return newMap;
-  }
+  CalendarController controller;
+  TodoListHandler todoListHandler;
 
   @override
   void initState() {
     super.initState();
-    _controller = CalendarController();
-    _eventController = TextEditingController();
-    _selectedEvents = [];
-    initPrefs();
-  }
-
-  initPrefs() async {
-    prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _events = Map<DateTime, List<dynamic>>.from(decodedMap(json.decode(prefs.getString("events") ?? "{}")));
-    });
+    controller = CalendarController();
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    todoListHandler = Provider.of<TodoListHandler>(context);
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -63,40 +39,31 @@ class _TodoListState extends State<TodoList> {
                 ListView.builder(
                   scrollDirection: Axis.vertical,
                   shrinkWrap: true,
-                  itemCount: _selectedEvents.length,
+                  itemCount: todoListHandler.selectedEvents.length,
                   itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onLongPress: (){
-                        setState(() { changeList(index); });
-                      },
-                      child: Card(
+                    return Card(
                         elevation: 5,
-                        color: _selectedEvents[index]["isdone"] == true ? Colors.deepPurpleAccent : Colors.white,
-                        child: Dismissible(
-                            key: Key(_selectedEvents[index]["todo"]),
-                            onDismissed: (direction) {
-                              setState(() {
-                                _selectedEvents.removeAt(index);
-                                _save();
-                              });
+                        color: todoListHandler.selectedEvents[index]["isdone"] == true ? Colors.deepPurpleAccent : Colors.white,
+                        child: ListTile(
+                          leading: todoListHandler.selectedEvents[index]["isdone"]  == true
+                              ? Icon(Icons.check_circle, color: Colors.white)
+                              : Icon(Icons.radio_button_unchecked, color: Colors.blueAccent,),
+                          title: todoListHandler.selectedEvents[index]["isdone"] == true
+                              ? Text(todoListHandler.selectedEvents[index]["todo"], style: TextStyle(fontWeight: FontWeight.normal, fontSize: 20, color: Colors.white),)
+                              : Text(todoListHandler.selectedEvents[index]["todo"], style: TextStyle(fontWeight: FontWeight.normal, fontSize: 20),),
+                          trailing: IconButton(
+                            icon: Icon(Icons.more_vert),
+                            onPressed: (){
+
                             },
-                            background: _deleteColor(),
-                            child: ListTile(
-                              leading: _selectedEvents[index]["isdone"]  == true
-                                  ? Icon(Icons.check_circle, color: Colors.white)
-                                  : Icon(Icons.radio_button_unchecked, color: Colors.blueAccent,),
-                              title: _selectedEvents[index]["isdone"] == true
-                                  ? Text(_selectedEvents[index]["todo"], style: TextStyle(fontWeight: FontWeight.normal, fontSize: 20, color: Colors.white),)
-                                  : Text(_selectedEvents[index]["todo"], style: TextStyle(fontWeight: FontWeight.normal, fontSize: 20),),
-                              onTap: () => {
-                                setState((){
-                                  _selectedEvents[index]["isdone"] == true ? _selectedEvents[index]["isdone"] = false : _selectedEvents[index]["isdone"] = true;
-                                  _save();
-                                })
-                              },
-                            )
-                        ),
-                      ),
+                          ),
+                          onTap: () => {
+                            setState((){
+                              todoListHandler.selectedEvents[index]["isdone"] == true ? todoListHandler.selectedEvents[index]["isdone"] = false : todoListHandler.selectedEvents[index]["isdone"] = true;
+                              todoListHandler.save();
+                            })
+                          },
+                        )
                     );
                   },
                 )
@@ -113,7 +80,7 @@ class _TodoListState extends State<TodoList> {
   Widget _TableCalendar(){
     return TableCalendar( // Calendar Style
       initialCalendarFormat: CalendarFormat.week,
-      events: _events,
+      events: todoListHandler.events,
       calendarStyle: CalendarStyle(
         // Calendar Style
         todayColor: Colors.orange,
@@ -132,10 +99,10 @@ class _TodoListState extends State<TodoList> {
         ),
         formatButtonTextStyle: TextStyle(color: Colors.white),
       ),
-      calendarController: _controller,
+      calendarController: controller,
       onDaySelected: (date, events) {
         setState(() {
-          _selectedEvents = events;
+          todoListHandler.selectedEvents = events;
         });
       },
       builders: CalendarBuilders(
@@ -170,7 +137,7 @@ class _TodoListState extends State<TodoList> {
               borderRadius: BorderRadius.all(Radius.circular(20.0))
           ),
           content: TextField(
-            controller: _eventController,
+            controller: todoListHandler.eventController,
           ),
           actions: <Widget>[
             RaisedButton(
@@ -181,34 +148,15 @@ class _TodoListState extends State<TodoList> {
               ),
               child: Text("Save", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.lightBlue),),
               onPressed: (){
-
-                if(_eventController.text.isEmpty) return;
-
-                setState(() {
-
-                  Map<String, dynamic> toMap() {
-                    return {
-                      'todo': _eventController.text,
-                      'isDone': false
-                    };
-                  }
-
-                  if (_events[_controller.selectedDay] != null){
-                    _events[_controller.selectedDay].add(toMap());
-                  }else {
-                    _events[_controller.selectedDay] = [toMap()];
-                  }
-                  _eventController.clear();
-                  _save();
-                  _eventController.clear();
-                  Navigator.pop(context);
-                });
+                todoListHandler.addTodoList(controller.selectedDay);
+                Navigator.pop(context);
               },
             )
           ],
         )
     );
   }
+
   changeList(int index){
     showDialog(
       context: context,
@@ -217,7 +165,7 @@ class _TodoListState extends State<TodoList> {
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(20.0))
         ),
-        content: TextField(controller: _eventController),
+        content: TextField(controller: todoListHandler.eventController),
         actions: <Widget>[
           RaisedButton(
               color: Colors.white,
@@ -227,11 +175,8 @@ class _TodoListState extends State<TodoList> {
               ),
               child: Text("Save", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.lightBlue),),
             onPressed: (){
-              setState(() {
-                _selectedEvents[index]["todo"] = _eventController.text;
-                _save();
-                Navigator.pop(context);
-              });
+              changeList(index);
+              Navigator.pop(context);
             }
             ),
           RaisedButton(
@@ -250,18 +195,6 @@ class _TodoListState extends State<TodoList> {
     );
   }
 
-  Widget statusBox(){
-    return Column(
-      children: <Widget>[
-
-      ],
-    );
-  }
-
-  _save(){
-    prefs.setString("events", json.encode(encodedMap(_events)));
-  }
-
   Widget _deleteColor(){
     return Container(
       decoration: BoxDecoration(
@@ -273,3 +206,9 @@ class _TodoListState extends State<TodoList> {
   }
 
 }
+
+
+//todoListHandler.selectedEvents.removeAt(index);
+//todoListHandler.save();
+//
+//changeList(index);

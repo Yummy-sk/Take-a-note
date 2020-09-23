@@ -10,9 +10,9 @@ class SettingView extends StatefulWidget {
 }
 
 class _SettingViewState extends State<SettingView> {
-  var pomodoroSetting = Setting("Pomodoro Setting", [ 15, 30, 60, 90, 120], " 분");
-  var restTimeSetting = Setting("Rest Time Setting", [ 5, 10, 15, 20, 25], " 분");
-  var longRestTimeSetting = Setting("Long Rest Time Setting",  [ 10, 15, 20, 25, 30], " 분");
+  var pomodoroSetting = Setting("Pomodoro Setting", [ 15, 30, 60, 90, 120, 1], " 분");
+  var restTimeSetting = Setting("Rest Time Setting", [ 5, 10, 15, 20, 25, 1], " 분");
+  var longRestTimeSetting = Setting("Long Rest Time Setting",  [ 10, 15, 20, 25, 30, 2], " 분");
   var termOfRestingTimeSetting = Setting("Term of Resting Time Setting", [ 3, 4, 5, 6, 7], " 번");
   SettingDataHandler settingDataHandler;
   SharedPreferences prefs;

@@ -4,8 +4,8 @@ import 'package:take_a_note_project/calender_view/month_table.dart';
 import 'package:take_a_note_project/enum.dart';
 import 'package:take_a_note_project/pomodoro/pomodoro.dart';
 import 'package:take_a_note_project/pomodoro/pomodoro_handler.dart';
-import 'package:take_a_note_project/pomodoro/show_bottom_sheet/show_bottom_sheet.dart';
 import 'package:take_a_note_project/pomodoro/todoList/todoList.dart';
+import 'package:take_a_note_project/pomodoro/todoList/todoList_handler.dart';
 import 'package:take_a_note_project/settings/setting_data_handler.dart';
 import 'package:take_a_note_project/settings/setting_view.dart';
 import 'package:take_a_note_project/siedbar/siedbar.dart';
@@ -19,8 +19,18 @@ class SideBarLayout extends StatelessWidget {
       ChangeNotifierProvider<SettingDataHandler>(create: (context) => SettingDataHandler(),),
       ChangeNotifierProvider<MenuItem>(create: (context) => MenuItem(MenuType.pomodoro),),
       ChangeNotifierProvider<PomodoroHandler>(create: (context) => PomodoroHandler(context),),
+      ChangeNotifierProvider<TodoListHandler>(create: (context) => TodoListHandler())
       ],
       child: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text('Take a note'),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(30),
+            ),
+          ),
+        ),
         body: Stack(
           children: <Widget>[
             Consumer<MenuItem>(
@@ -29,7 +39,7 @@ class SideBarLayout extends StatelessWidget {
               else if (value.menuType == MenuType.calendar) { return MonthTable(); }
               else if (value.menuType == MenuType.todoList) { return TodoList(); }
               else if (value.menuType == MenuType.settings) { return SettingView(); }}),
-            SideBar(),
+              SideBar(),
           ],
         ),
       ),
