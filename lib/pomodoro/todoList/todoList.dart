@@ -41,30 +41,33 @@ class _TodoListState extends State<TodoList> {
                   shrinkWrap: true,
                   itemCount: todoListHandler.selectedEvents.length,
                   itemBuilder: (context, index) {
-                    return Card(
-                        elevation: 5,
-                        color: todoListHandler.selectedEvents[index]["isdone"] == true ? Colors.deepPurpleAccent : Colors.white,
-                        child: ListTile(
-                          leading: todoListHandler.selectedEvents[index]["isdone"]  == true
-                              ? Icon(Icons.check_circle, color: Colors.white)
-                              : Icon(Icons.radio_button_unchecked, color: Colors.blueAccent,),
-                          title: todoListHandler.selectedEvents[index]["isdone"] == true
-                              ? Text(todoListHandler.selectedEvents[index]["todo"], style: TextStyle(fontWeight: FontWeight.normal, fontSize: 20, color: Colors.white),)
-                              : Text(todoListHandler.selectedEvents[index]["todo"], style: TextStyle(fontWeight: FontWeight.normal, fontSize: 20),),
-                          trailing: IconButton(
-                            icon: Icon(Icons.more_vert),
-                            onPressed: (){
+                    var todoItem = todoListHandler.selectedEvents[index];
+                    return todoCard(todoItem, index);
 
-                            },
-                          ),
-                          onTap: () => {
-                            setState((){
-                              todoListHandler.selectedEvents[index]["isdone"] == true ? todoListHandler.selectedEvents[index]["isdone"] = false : todoListHandler.selectedEvents[index]["isdone"] = true;
-                              todoListHandler.save();
-                            })
-                          },
-                        )
-                    );
+//                    return Card(
+//                        elevation: 5,
+//                        color: todoListHandler.selectedEvents[index]["isdone"] == true ? Colors.deepPurpleAccent : Colors.white,
+//                        child: ListTile(
+//                          leading: todoListHandler.selectedEvents[index]["isdone"]  == true
+//                              ? Icon(Icons.check_circle, color: Colors.white)
+//                              : Icon(Icons.radio_button_unchecked, color: Colors.blueAccent,),
+//                          title: todoListHandler.selectedEvents[index]["isdone"] == true
+//                              ? Text(todoListHandler.selectedEvents[index]["todo"], style: TextStyle(fontWeight: FontWeight.normal, fontSize: 20, color: Colors.white),)
+//                              : Text(todoListHandler.selectedEvents[index]["todo"], style: TextStyle(fontWeight: FontWeight.normal, fontSize: 20),),
+//                          trailing: IconButton(
+//                            icon: Icon(Icons.more_vert),
+//                            onPressed: (){
+//
+//                            },
+//                          ),
+//                          onTap: () => {
+//                            setState((){
+//                              todoListHandler.selectedEvents[index]["isdone"] == true ? todoListHandler.selectedEvents[index]["isdone"] = false : todoListHandler.selectedEvents[index]["isdone"] = true;
+//                              todoListHandler.save();
+//                            })
+//                          },
+//                        )
+//                    );
                   },
                 )
               ],
@@ -195,20 +198,37 @@ class _TodoListState extends State<TodoList> {
     );
   }
 
-  Widget _deleteColor(){
-    return Container(
-      decoration: BoxDecoration(
-          gradient: LinearGradient(
-              colors: [Colors.deepOrangeAccent, Colors.orange, Colors.orangeAccent, Colors.amberAccent, Colors.yellow, Colors.yellow]
-          )
-      ),
+  Widget todoCard(todoItem, int index){
+    Icon leading;
+    Color color;
+    Color titleColor;
+    bool isDone = todoItem["isdone"];
+    String toDo = todoItem["todo"];
+
+    if (isDone){
+      color = Colors.deepPurpleAccent;
+      leading = Icon(Icons.check_circle, color: Colors.white);
+      titleColor = Colors.white;
+    } else {
+      color = Colors.white;
+      leading = Icon(Icons.radio_button_unchecked, color: Colors.blueAccent,);
+      titleColor = Colors.black;
+    }
+
+    return Card(
+        elevation: 5,
+        color: color,
+        child: ListTile(
+        leading: leading,
+        title: Text(toDo, style: TextStyle(fontWeight: FontWeight.normal, fontSize: 20,  color : titleColor)),
+        trailing: IconButton(
+        icon: Icon(Icons.more_vert),
+        onPressed: (){},
+        ),
+        onTap: () => {
+        todoListHandler.setIsDone(index)
+        },
+        )
     );
   }
-
 }
-
-
-//todoListHandler.selectedEvents.removeAt(index);
-//todoListHandler.save();
-//
-//changeList(index);

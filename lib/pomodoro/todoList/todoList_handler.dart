@@ -70,4 +70,12 @@ class TodoListHandler with ChangeNotifier{
   void save() {
     prefs.setString("events", json.encode(encodedMap(events)));
   }
+
+  setIsDone(int index) {
+    selectedEvents[index]["isdone"] == true
+        ? selectedEvents[index]["isdone"] = false
+        : selectedEvents[index]["isdone"] = true;
+    save();
+    notifyListeners();
+  }
 }

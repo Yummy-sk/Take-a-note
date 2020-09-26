@@ -22,9 +22,13 @@ class SideBarLayout extends StatelessWidget {
       ChangeNotifierProvider<TodoListHandler>(create: (context) => TodoListHandler())
       ],
       child: Scaffold(
+        extendBodyBehindAppBar: true,
+        backgroundColor: Colors.transparent,
         appBar: AppBar(
           centerTitle: true,
           title: Text('Take a note'),
+          elevation: 0.0,
+          backgroundColor: Colors.black38.withOpacity(0.5),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
               bottom: Radius.circular(30),
