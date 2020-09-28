@@ -2,7 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:take_a_note_project/pomodoro/todoList/todoList_handler.dart';
+import 'package:take_a_note_project/model/todo_model.dart';
+import 'package:take_a_note_project/todoList/todoList_handler.dart';
 
 class TodoList extends StatefulWidget {
   @override
@@ -13,11 +14,13 @@ class _TodoListState extends State<TodoList> {
 
   CalendarController controller;
   TodoListHandler todoListHandler;
+  static TextEditingController eventController;
 
   @override
   void initState() {
     super.initState();
     controller = CalendarController();
+    eventController = TextEditingController();
   }
 
   @override
@@ -29,6 +32,13 @@ class _TodoListState extends State<TodoList> {
   @override
   Widget build(BuildContext context) {
     todoListHandler = Provider.of<TodoListHandler>(context);
+
+    List<TodoModel> todoList = new List<TodoModel>();
+    for (int i = 0; i < todoListHandler.todoList.length; i++) {
+      todoList.add(todoListHandler.todoList[i]);
+    }
+
+    todoListHandler.getAllTodo();
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -36,39 +46,35 @@ class _TodoListState extends State<TodoList> {
             child: Column(
               children: <Widget>[
                 _TableCalendar(),
-                ListView.builder(
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  itemCount: todoListHandler.selectedEvents.length,
-                  itemBuilder: (context, index) {
-                    var todoItem = todoListHandler.selectedEvents[index];
-                    return todoCard(todoItem, index);
-
-//                    return Card(
-//                        elevation: 5,
-//                        color: todoListHandler.selectedEvents[index]["isdone"] == true ? Colors.deepPurpleAccent : Colors.white,
-//                        child: ListTile(
-//                          leading: todoListHandler.selectedEvents[index]["isdone"]  == true
-//                              ? Icon(Icons.check_circle, color: Colors.white)
-//                              : Icon(Icons.radio_button_unchecked, color: Colors.blueAccent,),
-//                          title: todoListHandler.selectedEvents[index]["isdone"] == true
-//                              ? Text(todoListHandler.selectedEvents[index]["todo"], style: TextStyle(fontWeight: FontWeight.normal, fontSize: 20, color: Colors.white),)
-//                              : Text(todoListHandler.selectedEvents[index]["todo"], style: TextStyle(fontWeight: FontWeight.normal, fontSize: 20),),
-//                          trailing: IconButton(
-//                            icon: Icon(Icons.more_vert),
-//                            onPressed: (){
-//
-//                            },
-//                          ),
-//                          onTap: () => {
-//                            setState((){
-//                              todoListHandler.selectedEvents[index]["isdone"] == true ? todoListHandler.selectedEvents[index]["isdone"] = false : todoListHandler.selectedEvents[index]["isdone"] = true;
-//                              todoListHandler.save();
-//                            })
-//                          },
-//                        )
-//                    );
-                  },
+//                ListView.builder(
+//                  scrollDirection: Axis.vertical,
+//                  shrinkWrap: true,
+//                  itemCount: todoListHandler.selectedEvents.length,
+//                  itemBuilder: (context, index) {
+//                    var todo = todoListHandler.selectedEvents[index];
+//                    return todoCard(todo, index);
+//                  },
+//                )
+                SingleChildScrollView(
+                  physics: ScrollPhysics(),
+                  child: Column(
+                    children: [
+                      ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: todoList.length,
+                          itemBuilder: (context, index){
+                            return Card(
+                              color: Colors.cyan,
+                              child: ListTile(
+                                title: Text(todoList[index].todo),
+                              ),
+                            );
+                          }
+                      ),
+                    ]
+                  ),
                 )
               ],
             )
@@ -140,7 +146,7 @@ class _TodoListState extends State<TodoList> {
               borderRadius: BorderRadius.all(Radius.circular(20.0))
           ),
           content: TextField(
-            controller: todoListHandler.eventController,
+            controller: eventController,
           ),
           actions: <Widget>[
             RaisedButton(
@@ -151,7 +157,7 @@ class _TodoListState extends State<TodoList> {
               ),
               child: Text("Save", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.lightBlue),),
               onPressed: (){
-                todoListHandler.addTodoList(controller.selectedDay);
+                todoListHandler.addTodoList(controller.selectedDay, eventController);
                 Navigator.pop(context);
               },
             )
@@ -168,7 +174,7 @@ class _TodoListState extends State<TodoList> {
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(20.0))
         ),
-        content: TextField(controller: todoListHandler.eventController),
+        content: TextField(controller: eventController),
         actions: <Widget>[
           RaisedButton(
               color: Colors.white,
@@ -202,7 +208,7 @@ class _TodoListState extends State<TodoList> {
     Icon leading;
     Color color;
     Color titleColor;
-    bool isDone = todoItem["isdone"];
+    bool isDone = todoItem["isDone"];
     String toDo = todoItem["todo"];
 
     if (isDone){
@@ -214,7 +220,7 @@ class _TodoListState extends State<TodoList> {
       leading = Icon(Icons.radio_button_unchecked, color: Colors.blueAccent,);
       titleColor = Colors.black;
     }
-
+    
     return Card(
         elevation: 5,
         color: color,

@@ -1,21 +1,40 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:take_a_note_project/model/todo_model.dart';
+import 'package:take_a_note_project/services/todo_service.dart';
 
 class TodoListHandler with ChangeNotifier{
   SharedPreferences prefs;
   Map<DateTime, List<dynamic>> events;
-  TextEditingController eventController;
   List<dynamic> selectedEvents;
+//  TodoService todoService;
+  TodoModel todoModel;
+  List<TodoModel> todoList;
+  TodoService _todoService = new TodoService();
+  var loading = false;
 
   TodoListHandler(){
-    this.eventController = TextEditingController();
     this.selectedEvents = [];
     initPrefs();
+    todoList = List<TodoModel>();
   }
 
-  Map<String, dynamic> toMap() {
+  getAllTodo() async {
+    todoList.clear();
+    var todos = await _todoService.readTodo();
+    todos.forEach((todo){
+      var todoModel = TodoModel();
+      todoModel.key = todo['key'];
+      todoModel.dateTime = todo['dateTime'];
+      todoModel.todo = todo['todo'];
+      todoModel.isDone = todo['isDone'];
+      todoList.add(todoModel);
+    });
+    notifyListeners();
+  }
+
+  Map<String, dynamic> toMap(TextEditingController eventController) {
     return {
       'todo': eventController.text,
       'isDone': false
@@ -44,15 +63,19 @@ class TodoListHandler with ChangeNotifier{
     return events[dateTime];
   }
 
-  addTodoList(DateTime dateTime) {
-
+  addTodoList(DateTime dateTime, TextEditingController eventController) async {
     if(eventController.text.isEmpty) { return; }
     else {
-
+      todoModel = TodoModel();
       if (events[dateTime] != null) {
-        events[dateTime].add(toMap());
+        //await TodoService().dropTable();
+        todoModel.dateTime = dateTime.millisecondsSinceEpoch;
+        todoModel.todo = eventController.text;
+        var result = await TodoService().saveTodo(todoModel);
+        print(result);
+        //events[dateTime].add(toMap(eventController));
       } else {
-        events[dateTime] = [toMap()];
+        //events[dateTime] = [toMap(eventController)];
       }
 
       eventController.clear();
@@ -62,7 +85,7 @@ class TodoListHandler with ChangeNotifier{
     }
   }
 
-  changeList(int index) {
+  changeList(int index, TextEditingController eventController) {
     selectedEvents[index]["todo"] = eventController.text;
     save();
   }
@@ -72,10 +95,11 @@ class TodoListHandler with ChangeNotifier{
   }
 
   setIsDone(int index) {
-    selectedEvents[index]["isdone"] == true
-        ? selectedEvents[index]["isdone"] = false
-        : selectedEvents[index]["isdone"] = true;
+    selectedEvents[index]["isDone"] == true
+        ? selectedEvents[index]["isDone"] = false
+        : selectedEvents[index]["isDone"] = true;
     save();
     notifyListeners();
   }
+
 }

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:take_a_note_project/pomodoro/pomodoro_handler.dart';
 
 bottomSheet(BuildContext context, String startTime, String endTime) {
   TextEditingController textEditingController;
