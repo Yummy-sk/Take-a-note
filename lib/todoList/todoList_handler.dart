@@ -8,30 +8,50 @@ class TodoListHandler with ChangeNotifier{
   SharedPreferences prefs;
   Map<DateTime, List<dynamic>> events;
   List<dynamic> selectedEvents;
-//  TodoService todoService;
   TodoModel todoModel;
-  List<TodoModel> todoList;
+  List<TodoModel> doneTodo;
+  List<TodoModel> onProgressTodo;
   TodoService _todoService = new TodoService();
-  var loading = false;
 
   TodoListHandler(){
     this.selectedEvents = [];
     initPrefs();
-    todoList = List<TodoModel>();
+    doneTodo = List<TodoModel>();
+    onProgressTodo = List<TodoModel>();
   }
 
-  getAllTodo() async {
-    todoList.clear();
-    var todos = await _todoService.readTodo();
+  getOnProgress(DateTime dateTime) async {
+    onProgressTodo.clear();
+    var todos = await _todoService.readTodoOnProgress('todo', dateTime.millisecondsSinceEpoch, 0);
     todos.forEach((todo){
       var todoModel = TodoModel();
       todoModel.key = todo['key'];
       todoModel.dateTime = todo['dateTime'];
       todoModel.todo = todo['todo'];
       todoModel.isDone = todo['isDone'];
-      todoList.add(todoModel);
+      onProgressTodo.add(todoModel);
     });
+    print(onProgressTodo.length);
     notifyListeners();
+  }
+
+  getDone(DateTime dateTime) async {
+    doneTodo.clear();
+    var todos = await _todoService.readTodoOnProgress('todo', dateTime.millisecondsSinceEpoch, 1);
+    todos.forEach((todo){
+      var todoModel = TodoModel();
+      todoModel.key = todo['key'];
+      todoModel.dateTime = todo['dateTime'];
+      todoModel.todo = todo['todo'];
+      todoModel.isDone = todo['isDone'];
+      doneTodo.add(todoModel);
+    });
+    print(doneTodo.length);
+    notifyListeners();
+  }
+
+  setTodo(TodoModel todoModel){
+    _todoService.updateTodo(todoModel);
   }
 
   Map<String, dynamic> toMap(TextEditingController eventController) {
@@ -75,12 +95,17 @@ class TodoListHandler with ChangeNotifier{
         print(result);
         //events[dateTime].add(toMap(eventController));
       } else {
+        todoModel.dateTime = dateTime.millisecondsSinceEpoch;
+        todoModel.todo = eventController.text;
+        var result = await TodoService().saveTodo(todoModel);
+        print(result);
         //events[dateTime] = [toMap(eventController)];
       }
 
       eventController.clear();
       save();
       eventController.clear();
+      getOnProgress(dateTime);
       notifyListeners();
     }
   }

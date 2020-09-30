@@ -27,10 +27,30 @@ class Repository {
     return await connection.query(table);
   }
 
+  readDataOnProgress(table, dateTime, isDone) async {
+    var connection = await database;
+    return await connection.query(table, where: 'dateTime=? AND isDone=?', whereArgs: [dateTime, isDone]);
+  }
+
+  readDataDone(table, dateTime, isDone) async {
+    var connection = await database;
+    return await connection.query(table, where: 'dateTime=? AND isDone=?', whereArgs: [dateTime, isDone]);
+  }
+
+  updateData(table, data) async {
+    var connection = await database;
+    return await connection
+        .update(table, data, where: 'id=?', whereArgs: [data['id']]);
+  }
+
+  deleteData(table, key) async {
+    var connection = await database;
+    return await connection.rawDelete("DELETE FROM $table WHERE key = $key");
+  }
+
   deleteOptionTable() async {
     final db = await database;
     db.rawDelete("DROP TABLE IF EXISTS todo");
   }
-
 
 }
