@@ -74,24 +74,24 @@ class TodoList extends StatefulWidget {
             child: Column(
               children: <Widget>[
                 SizedBox(height: 50,),
-                GestureDetector(
-                  child: ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: todoListHandler.onProgressTodo.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          child: todoCard(
-                              todoListHandler.onProgressTodo, index),
-                          onTap: () {
-                            print(index);
-                            print(todoListHandler.onProgressTodo[index].todo);
-                          },
-                        );
-                      }
-                  ),
-                  onTap: () {},
+                ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: todoListHandler.onProgressTodo.length,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        child: todoCard(
+                            context, todoListHandler.onProgressTodo, index),
+                        onTap: () {
+                          todoListHandler.onProgressTodo[index].isDone = 1;
+                          todoListHandler.setTodo(
+                              todoListHandler.onProgressTodo[index]);
+                          todoListHandler.getOnProgress(controller.selectedDay);
+                          todoListHandler.getDone(controller.selectedDay);
+                        },
+                      );
+                    }
                 ),
                 SizedBox(height: 20,)
               ],
@@ -119,9 +119,13 @@ class TodoList extends StatefulWidget {
                     itemCount: todoListHandler.doneTodo.length,
                     itemBuilder: (context, index) {
                       return GestureDetector(
-                        child: todoCard(todoListHandler.doneTodo, index),
+                        child: todoCard(
+                            context, todoListHandler.doneTodo, index),
                         onTap: () {
-
+                          todoListHandler.doneTodo[index].isDone = 0;
+                          todoListHandler.setTodo(todoListHandler.doneTodo[index]);
+                          todoListHandler.getOnProgress(controller.selectedDay);
+                          todoListHandler.getDone(controller.selectedDay);
                         },
                       );
                     }
@@ -252,7 +256,6 @@ class TodoList extends StatefulWidget {
                     child: Text("Save", style: TextStyle(
                         fontWeight: FontWeight.bold, color: Colors.lightBlue),),
                     onPressed: () {
-                      changeList(index);
                       Navigator.pop(context);
                     }
                 ),
@@ -274,7 +277,49 @@ class TodoList extends StatefulWidget {
     );
   }
 
-  Widget todoCard(todoItem, int index) {
+  deleteList(int index) {
+    showDialog(
+        context: context,
+        builder: (context) =>
+            AlertDialog(
+              title: Text(
+                "정말 삭제하시겠어요?.", style: TextStyle(fontWeight: FontWeight.bold),),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20.0))
+              ),
+              actions: <Widget>[
+                RaisedButton(
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0),
+                        side: BorderSide(color: Colors.lightBlue)
+                    ),
+                    child: Text("Save", style: TextStyle(
+                        fontWeight: FontWeight.bold, color: Colors.lightBlue),),
+                    onPressed: () {
+
+                      Navigator.pop(context);
+                    }
+                ),
+                RaisedButton(
+                  color: Colors.white,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18.0),
+                      side: BorderSide(color: Colors.deepOrangeAccent)
+                  ),
+                  child: Text("Cancel", style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.deepOrangeAccent),),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                )
+              ],
+            )
+    );
+  }
+
+  Widget todoCard(BuildContext context, todoItem, int index) {
     Icon leading;
     Color color;
     Color titleColor;
@@ -300,13 +345,61 @@ class TodoList extends StatefulWidget {
               fontWeight: FontWeight.normal, fontSize: 20, color: titleColor)),
           trailing: IconButton(
             icon: Icon(Icons.more_vert),
-            onPressed: () {},
+            onPressed: () {
+              settingBox(context, index);
+            },
           ),
-          onTap: () =>
-          {
-            todoListHandler.setIsDone(index)
-          },
         )
+    );
+  }
+
+  Widget updateTodo(BuildContext context, int index) {
+    return ListTile(
+      leading: Icon(Icons.edit),
+      title: Text("TodoList 수정"),
+      onTap: () {
+        Navigator.pop(context);
+        changeList(index);
+      },
+    );
+  }
+
+  Widget deleteTodo(BuildContext context, int index) {
+    return ListTile(
+      leading: Icon(Icons.delete_forever),
+      title: Text("TodoList 삭제"),
+      onTap: () {
+        Navigator.pop(context);
+        deleteList(index);
+      },
+    );
+  }
+
+  settingBox(BuildContext context, int index) {
+    showBottomSheet(
+        context: context,
+        builder: (context) {
+          return Container(
+              color: Color(0xFF737373),
+              height: 115,
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Theme
+                        .of(context)
+                        .canvasColor,
+                    borderRadius: BorderRadius.only(
+                      topLeft: const Radius.circular(10),
+                      topRight: const Radius.circular(10),
+                    )),
+                child: Column(
+                  children: [
+                    updateTodo(context, index),
+                    deleteTodo(context, index)
+                  ],
+                ),
+              ),
+          );
+        }
     );
   }
 }
