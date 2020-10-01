@@ -87,8 +87,7 @@ class TodoList extends StatefulWidget {
                           todoListHandler.onProgressTodo[index].isDone = 1;
                           todoListHandler.setTodo(
                               todoListHandler.onProgressTodo[index]);
-                          todoListHandler.getOnProgress(controller.selectedDay);
-                          todoListHandler.getDone(controller.selectedDay);
+                          todoListHandler.relodeTodos(controller.selectedDay);
                         },
                       );
                     }
@@ -124,8 +123,7 @@ class TodoList extends StatefulWidget {
                         onTap: () {
                           todoListHandler.doneTodo[index].isDone = 0;
                           todoListHandler.setTodo(todoListHandler.doneTodo[index]);
-                          todoListHandler.getOnProgress(controller.selectedDay);
-                          todoListHandler.getDone(controller.selectedDay);
+                          todoListHandler.relodeTodos(controller.selectedDay);
                         },
                       );
                     }
@@ -168,8 +166,7 @@ class TodoList extends StatefulWidget {
       onDaySelected: (date, events) {
         setState(() {
           todoListHandler.selectedEvents = events;
-          todoListHandler.getOnProgress(controller.selectedDay);
-          todoListHandler.getDone(controller.selectedDay);
+          todoListHandler.relodeTodos(controller.selectedDay);
         });
       },
       builders: CalendarBuilders(
@@ -235,7 +232,7 @@ class TodoList extends StatefulWidget {
     );
   }
 
-  changeList(int index) {
+  changeList(todoItem) {
     showDialog(
         context: context,
         builder: (context) =>
@@ -256,6 +253,10 @@ class TodoList extends StatefulWidget {
                     child: Text("Save", style: TextStyle(
                         fontWeight: FontWeight.bold, color: Colors.lightBlue),),
                     onPressed: () {
+                      todoItem.todo = eventController.text;
+                      todoListHandler.setTodo(todoItem);
+                      todoListHandler.relodeTodos(controller.selectedDay);
+                      eventController.clear();
                       Navigator.pop(context);
                     }
                 ),
@@ -277,13 +278,13 @@ class TodoList extends StatefulWidget {
     );
   }
 
-  deleteList(int index) {
+  deleteList(todoItem) {
     showDialog(
         context: context,
         builder: (context) =>
             AlertDialog(
               title: Text(
-                "정말 삭제하시겠어요?.", style: TextStyle(fontWeight: FontWeight.bold),),
+                "정말 삭제하시겠어요?", style: TextStyle(fontWeight: FontWeight.bold),),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20.0))
               ),
@@ -294,10 +295,11 @@ class TodoList extends StatefulWidget {
                         borderRadius: BorderRadius.circular(18.0),
                         side: BorderSide(color: Colors.lightBlue)
                     ),
-                    child: Text("Save", style: TextStyle(
+                    child: Text("Yes", style: TextStyle(
                         fontWeight: FontWeight.bold, color: Colors.lightBlue),),
                     onPressed: () {
-
+                      todoListHandler.deleteTodo(todoItem.key);
+                      todoListHandler.relodeTodos(controller.selectedDay);
                       Navigator.pop(context);
                     }
                 ),
@@ -346,36 +348,36 @@ class TodoList extends StatefulWidget {
           trailing: IconButton(
             icon: Icon(Icons.more_vert),
             onPressed: () {
-              settingBox(context, index);
+              settingBox(context, todoItem[index]);
             },
           ),
         )
     );
   }
 
-  Widget updateTodo(BuildContext context, int index) {
+  Widget updateTodo(BuildContext context, todoItem) {
     return ListTile(
       leading: Icon(Icons.edit),
       title: Text("TodoList 수정"),
       onTap: () {
         Navigator.pop(context);
-        changeList(index);
+        changeList(todoItem);
       },
     );
   }
 
-  Widget deleteTodo(BuildContext context, int index) {
+  Widget deleteTodo(BuildContext context, todoItem) {
     return ListTile(
       leading: Icon(Icons.delete_forever),
       title: Text("TodoList 삭제"),
       onTap: () {
         Navigator.pop(context);
-        deleteList(index);
+        deleteList(todoItem);
       },
     );
   }
 
-  settingBox(BuildContext context, int index) {
+  settingBox(BuildContext context, todoItem) {
     showBottomSheet(
         context: context,
         builder: (context) {
@@ -393,8 +395,8 @@ class TodoList extends StatefulWidget {
                     )),
                 child: Column(
                   children: [
-                    updateTodo(context, index),
-                    deleteTodo(context, index)
+                    updateTodo(context, todoItem),
+                    deleteTodo(context, todoItem)
                   ],
                 ),
               ),
