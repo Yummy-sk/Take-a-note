@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:take_a_note_project/model/todo_model.dart';
 import 'package:take_a_note_project/services/todo_service.dart';
 

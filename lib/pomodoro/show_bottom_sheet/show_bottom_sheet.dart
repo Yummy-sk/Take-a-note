@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:take_a_note_project/pomodoro/show_bottom_sheet/select_todo.dart';
+import 'package:take_a_note_project/pomodoro/show_bottom_sheet/select_todo.dart';
 
 bottomSheet(BuildContext context, String startTime, String endTime) {
   TextEditingController textEditingController;
@@ -58,7 +60,12 @@ bottomSheet(BuildContext context, String startTime, String endTime) {
                     ListTile(
                       leading: Icon(Icons.assignment_turned_in),
                       title: Text('Todo List에서 선택합니다.'),
-                      onTap: () => {Navigator.pop(context)},
+                      onTap: () => {
+                        Navigator.pop(context),
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (BuildContext context) => SelectTodo()
+                        ))
+                      },
                     ),
                     ListTile(
                       leading: Icon(Icons.close),

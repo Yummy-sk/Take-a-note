@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +23,6 @@ class TodoList extends StatefulWidget {
     header = Header();
     controller = CalendarController();
     eventController = TextEditingController();
-    //todoListHandler.getAllTodo();
   }
 
   @override
@@ -37,7 +34,6 @@ class TodoList extends StatefulWidget {
   @override
   Widget build(BuildContext context) {
     todoListHandler = Provider.of<TodoListHandler>(context);
-
     return Scaffold(
       backgroundColor: Color(0xffFEE8D6),
       body: SafeArea(
@@ -358,7 +354,7 @@ class TodoList extends StatefulWidget {
   Widget updateTodo(BuildContext context, todoItem) {
     return ListTile(
       leading: Icon(Icons.edit),
-      title: Text("TodoList 수정"),
+      title: Text("To Do 수정"),
       onTap: () {
         Navigator.pop(context);
         changeList(todoItem);
@@ -369,7 +365,7 @@ class TodoList extends StatefulWidget {
   Widget deleteTodo(BuildContext context, todoItem) {
     return ListTile(
       leading: Icon(Icons.delete_forever),
-      title: Text("TodoList 삭제"),
+      title: Text("To Do 삭제"),
       onTap: () {
         Navigator.pop(context);
         deleteList(todoItem);
