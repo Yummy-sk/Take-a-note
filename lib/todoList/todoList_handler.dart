@@ -14,6 +14,7 @@ class TodoListHandler with ChangeNotifier{
     this.selectedEvents = [];
     doneTodo = List<TodoModel>();
     onProgressTodo = List<TodoModel>();
+    events = {};
   }
 
   getOnProgress(DateTime dateTime) async {
@@ -59,23 +60,20 @@ class TodoListHandler with ChangeNotifier{
     getDone(dateTime);
   }
 
-
   addTodoList(DateTime dateTime, TextEditingController eventController) async {
     if(eventController.text.isEmpty) { return; }
     else {
       todoModel = TodoModel();
       if (events[dateTime] != null) {
         todoModel.dateTime = dateTime.millisecondsSinceEpoch;
-        print(dateTime);
         todoModel.todo = eventController.text;
         var result = await TodoService().saveTodo(todoModel);
-        print(result);
       } else {
         todoModel.dateTime = dateTime.millisecondsSinceEpoch;
         todoModel.todo = eventController.text;
         var result = await TodoService().saveTodo(todoModel);
-        print(result);
       }
+
       eventController.clear();
       getOnProgress(dateTime);
       notifyListeners();

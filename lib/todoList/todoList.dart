@@ -9,13 +9,14 @@ import 'package:take_a_note_project/todoList/todoList_handler.dart';
 class TodoList extends StatefulWidget {
   @override
   _TodoListState createState() => _TodoListState();
-}class _TodoListState extends State<TodoList> {
+}
+
+class _TodoListState extends State<TodoList> {
   Header header;
   TodoModel todoModel;
   CalendarController controller;
   TodoListHandler todoListHandler;
   static TextEditingController eventController;
-
 
   @override
   void initState() {
@@ -135,6 +136,7 @@ class TodoList extends StatefulWidget {
   }
 
   Widget _TableCalendar() {
+    List holidays = [];
     return TableCalendar( // Calendar Style
       initialCalendarFormat: CalendarFormat.week,
       events: todoListHandler.events,
@@ -159,8 +161,9 @@ class TodoList extends StatefulWidget {
         formatButtonTextStyle: TextStyle(color: Colors.white),
       ),
       calendarController: controller,
-      onDaySelected: (date, events) {
+      onDaySelected: (date, events, holidays) {
         setState(() {
+          print(events);
           todoListHandler.selectedEvents = events;
           todoListHandler.relodeTodos(controller.selectedDay);
         });

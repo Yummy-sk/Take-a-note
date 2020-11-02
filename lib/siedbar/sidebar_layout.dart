@@ -40,7 +40,7 @@ class SideBarLayout extends StatelessWidget {
             Consumer<MenuItem>(
               builder: (BuildContext context, MenuItem value, Widget child){
               if(value.menuType == MenuType.pomodoro) { return Pomodoro(); }
-              else if (value.menuType == MenuType.calendar) { return MonthTable(); }
+              else if (value.menuType == MenuType.calendar) { return TimeTable(); }
               else if (value.menuType == MenuType.todoList) { return TodoList(); }
               else if (value.menuType == MenuType.settings) { return SettingView(); }}),
               SideBar(),
