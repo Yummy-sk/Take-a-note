@@ -62,9 +62,7 @@ bottomSheet(BuildContext context, String startTime, String endTime) {
                       title: Text('Todo List에서 선택합니다.'),
                       onTap: () => {
                         Navigator.pop(context),
-                        Navigator.push(context, MaterialPageRoute(
-                          builder: (BuildContext context) => SelectTodo()
-                        ))
+                        selectTodo(context)
                       },
                     ),
                     ListTile(

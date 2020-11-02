@@ -66,6 +66,7 @@ class TodoListHandler with ChangeNotifier{
       todoModel = TodoModel();
       if (events[dateTime] != null) {
         todoModel.dateTime = dateTime.millisecondsSinceEpoch;
+        print(dateTime);
         todoModel.todo = eventController.text;
         var result = await TodoService().saveTodo(todoModel);
         print(result);
