@@ -14,6 +14,6 @@ class DatabaseConnection{
   _onCreatingDatabase(Database database, int version) async {
     // Create table todos
     await database.execute(
-        "CREATE TABLE todo(key INTEGER PRIMARY KEY AUTOINCREMENT, dateTime INTEGER, todo TEXT, isDone INTEGER)");
+        "CREATE TABLE todo(key INTEGER PRIMARY KEY AUTOINCREMENT, dateTime INTEGER, todo TEXT, isDone INTEGER, startTime Text, endTime Text)");
   }
 }

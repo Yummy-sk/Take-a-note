@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:take_a_note_project/model/todo_model.dart';
+import 'package:take_a_note_project/pomodoro/show_bottom_sheet/popup_content.dart';
+import 'package:take_a_note_project/pomodoro/show_bottom_sheet/popup_layout.dart';
 import 'package:take_a_note_project/pomodoro/show_bottom_sheet/select_todo.dart';
 import 'package:take_a_note_project/pomodoro/show_bottom_sheet/select_todo.dart';
+import 'package:take_a_note_project/services/todo_service.dart';
 
 bottomSheet(BuildContext context, String startTime, String endTime) {
-  TextEditingController textEditingController;
+  TextEditingController textEditingController = TextEditingController();
   showModalBottomSheet(
           context: context,
           builder: (context) {
@@ -41,19 +46,29 @@ bottomSheet(BuildContext context, String startTime, String endTime) {
                                     ),
                                     actions: <Widget>[
                                       actionButton(
+                                          true,
                                           Colors.lightBlue,
                                           Text("Save", style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               color: Colors.lightBlue),),
-                                          context),
+                                          context,
+                                        startTime,
+                                        endTime,
+                                        textEditingController,
+                                      ),
                                       actionButton(
+                                          false,
                                           Colors.deepOrangeAccent,
                                           Text(
                                             "Cancel",
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 color: Colors.deepOrangeAccent),),
-                                          context)
+                                          context,
+                                          startTime,
+                                          endTime,
+                                          textEditingController,
+                                      )
                                     ]))
                       },
                     ),
@@ -62,7 +77,7 @@ bottomSheet(BuildContext context, String startTime, String endTime) {
                       title: Text('Todo List에서 선택합니다.'),
                       onTap: () => {
                         Navigator.pop(context),
-                        selectTodo(context)
+                        showPopup(context, SelectTodo())
                       },
                     ),
                     ListTile(
@@ -77,7 +92,23 @@ bottomSheet(BuildContext context, String startTime, String endTime) {
           });
 }
 
-  Widget actionButton(Color colors, Text text, context) {
+  Future DatePicker(BuildContext context) {
+    return showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2020),
+        lastDate: DateTime(2030),
+        builder: (BuildContext context, Widget child) {
+          return Theme(
+              data: ThemeData.dark(),
+              child: child
+          );
+        }
+    );
+  }
+  Widget actionButton(bool bool, Color colors, Text text, context, String startTime, String endTime, TextEditingController eventController) {
+    TodoModel todoModel = TodoModel();
+    TodoService todoService = new TodoService();
     return RaisedButton(
       color: Colors.white,
       shape: RoundedRectangleBorder(
@@ -86,7 +117,47 @@ bottomSheet(BuildContext context, String startTime, String endTime) {
       ),
       child: text,
       onPressed: () {
+        if (bool) {
+          todoModel.isDone = 1;
+          todoModel.todo = eventController.text;
+          todoModel.dateTime = DateTime.now().millisecondsSinceEpoch;
+          todoModel.startTime = startTime;
+          todoModel.endTime = endTime;
+          todoService.saveTodo(todoModel);
+          print("저장됨");
+        }
         Navigator.pop(context);
       },
     );
   }
+  showPopup(BuildContext context, Widget widget, {BuildContext popupContext}) {
+    Navigator.push(
+      context,
+      PopupLayout(
+        top: 30,
+        left: 30,
+        right: 30,
+        bottom: 50,
+        child: PopupContent(
+          content: Scaffold(
+            appBar: AppBar(
+              title: Text("했던 일을 선택합니다"),
+              leading: Builder(builder: (context) {
+                return IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: () {
+                    try {
+                      Navigator.pop(context);
+                    }catch(e) {}
+                  },
+                );
+              },),
+            ),
+            resizeToAvoidBottomPadding: false,
+            body: widget,
+          ),
+        )
+      )
+    );
+  }
+
