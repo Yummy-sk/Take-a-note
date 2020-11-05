@@ -16,45 +16,6 @@ class _TimeTableState extends State<TimeTable> {
   TextStyle dayStyle(FontWeight fontWeight) {
     return TextStyle(color: Color(0xff30384c), fontWeight: fontWeight);
   }
-  Container taskList(String title, String description, IconData iconImg, Color iconColor ){
-    return Container(
-      padding: EdgeInsets.only(top: 20),
-      child: Row(
-        children: [
-          Icon(
-            iconImg,
-            color: iconColor,
-            size: 30,
-          ),
-          Container(
-            padding: EdgeInsets.only(left: 10, right: 10),
-            width: MediaQuery.of(context).size.width * 0.8,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: (
-                    TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white
-                    )
-                ),),
-                SizedBox(height: 10,),
-                Text(
-                  description,
-                  style: TextStyle(
-                      fontSize: 15,
-                      color: Colors.white,
-                      fontWeight: FontWeight.normal
-                  ),
-                )
-              ],
-            ),
-          )
-        ],
-      ),
-    );
-  }
   @override
   void initState() {
     super.initState();
@@ -138,11 +99,16 @@ class _TimeTableState extends State<TimeTable> {
                         ),),
                       ),
                       ListView.builder(
+                        scrollDirection: Axis.vertical,
                           shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
                           itemCount: todoListHandler.doneTodo.length,
                           itemBuilder: (context, index) {
                             return GestureDetector(
-                              child: todoCard(context, todoListHandler.doneTodo, index),
+                              child: todoCard(context,
+                                  todoListHandler.doneTodo,
+                                  index
+                              ),
                             );
                           }
                       )
@@ -169,22 +135,6 @@ class _TimeTableState extends State<TimeTable> {
                       ),
                     )
                   ),
-                  Positioned(
-                    bottom: 40,
-                    right: 20,
-                    child: Container(
-                      padding: EdgeInsets.all((20)),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                        color: Color(0xffb038f1),
-                        boxShadow: [BoxShadow(
-                          color: Colors.black38,
-                          blurRadius: 30
-                        )]
-                      ),
-                      child: Text("+", style: TextStyle(color: Colors.white, fontSize: 40),),
-                    ),
-                  )
                 ],
               ),
             )
@@ -194,18 +144,24 @@ class _TimeTableState extends State<TimeTable> {
     );
   }
   Widget todoCard(BuildContext context, todoItem, int index) {
-    Icon leading = Icon(Icons.check_circle, color: Colors.white);
     Color color = Colors.white38;
     Color titleColor = Colors.white;
     String toDo = todoItem[index].todo;
+    String startTime = todoItem[index].startTime;
+    String endTime = todoItem[index].endTime;
 
     return Card(
         elevation: 5,
         color: color,
         child: ListTile(
-          leading: leading,
-          title: Text(toDo, style: TextStyle(
+          leading: Icon(CupertinoIcons.check_mark_circled_solid, color: Colors.greenAccent, size: 40,),
+          title: Text(
+              (startTime != null) ? "`$startTime` ~ `$endTime`" : "- ~ -"
+              ,style: TextStyle(
               fontWeight: FontWeight.normal, fontSize: 20, color: titleColor)),
+          subtitle: Text(toDo, style: TextStyle(
+            fontWeight: FontWeight.normal, fontSize: 30, color: Colors.white70
+          ),),
         )
     );
   }
