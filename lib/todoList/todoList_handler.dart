@@ -28,7 +28,7 @@ class TodoListHandler with ChangeNotifier{
       todoModel.isDone = todo['isDone'];
       onProgressTodo.add(todoModel);
     });
-    print(onProgressTodo.length);
+    //print(onProgressTodo.length);
     notifyListeners();
   }
 
@@ -67,11 +67,11 @@ class TodoListHandler with ChangeNotifier{
       if (events[dateTime] != null) {
         todoModel.dateTime = dateTime.millisecondsSinceEpoch;
         todoModel.todo = eventController.text;
-        var result = await TodoService().saveTodo(todoModel);
+        await TodoService().saveTodo(todoModel);
       } else {
         todoModel.dateTime = dateTime.millisecondsSinceEpoch;
         todoModel.todo = eventController.text;
-        var result = await TodoService().saveTodo(todoModel);
+        await TodoService().saveTodo(todoModel);
       }
 
       eventController.clear();

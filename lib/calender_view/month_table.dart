@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:take_a_note_project/todoList/todoList_handler.dart';
 
 class TimeTable extends StatefulWidget {
   @override
@@ -10,6 +12,7 @@ class TimeTable extends StatefulWidget {
 
 class _TimeTableState extends State<TimeTable> {
   CalendarController controller;
+  TodoListHandler todoListHandler;
   TextStyle dayStyle(FontWeight fontWeight) {
     return TextStyle(color: Color(0xff30384c), fontWeight: fontWeight);
   }
@@ -64,6 +67,7 @@ class _TimeTableState extends State<TimeTable> {
   }
   @override
   Widget build(BuildContext context) {
+    todoListHandler = Provider.of<TodoListHandler>(context);
     return Container(
       child: SingleChildScrollView(
         child: Column(
@@ -104,6 +108,12 @@ class _TimeTableState extends State<TimeTable> {
                   color: Color(0xff30384c)
                 )
               ),
+              onDaySelected: (date, events, holidays) {
+                setState(() {
+                  todoListHandler.selectedEvents = events;
+                  todoListHandler.getDone(controller.selectedDay);
+                });
+              },
             ),
             SizedBox(height: 20),
             Container(
@@ -127,9 +137,15 @@ class _TimeTableState extends State<TimeTable> {
                           fontWeight: FontWeight.bold
                         ),),
                       ),
-                      taskList("Task 1", "Description of Task", CupertinoIcons.check_mark_circled_solid, Color(0xff00cf8d)),
-                      taskList("Task 2", "Description of Task", CupertinoIcons.check_mark_circled_solid, Color(0xff00cf8d)),
-                      taskList("Task 3", "Description of Task", CupertinoIcons.check_mark_circled_solid, Color(0xff00cf8d))
+                      ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: todoListHandler.doneTodo.length,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              child: todoCard(context, todoListHandler.doneTodo, index),
+                            );
+                          }
+                      )
                     ],
                   ),
                   Positioned(
@@ -175,6 +191,22 @@ class _TimeTableState extends State<TimeTable> {
           ],
         ),
       ),
+    );
+  }
+  Widget todoCard(BuildContext context, todoItem, int index) {
+    Icon leading = Icon(Icons.check_circle, color: Colors.white);
+    Color color = Colors.white38;
+    Color titleColor = Colors.white;
+    String toDo = todoItem[index].todo;
+
+    return Card(
+        elevation: 5,
+        color: color,
+        child: ListTile(
+          leading: leading,
+          title: Text(toDo, style: TextStyle(
+              fontWeight: FontWeight.normal, fontSize: 20, color: titleColor)),
+        )
     );
   }
 }

@@ -109,6 +109,7 @@ bottomSheet(BuildContext context, String startTime, String endTime) {
   Widget actionButton(bool bool, Color colors, Text text, context, String startTime, String endTime, TextEditingController eventController) {
     TodoModel todoModel = TodoModel();
     TodoService todoService = new TodoService();
+    DateTime now;
     return RaisedButton(
       color: Colors.white,
       shape: RoundedRectangleBorder(
@@ -120,7 +121,8 @@ bottomSheet(BuildContext context, String startTime, String endTime) {
         if (bool) {
           todoModel.isDone = 1;
           todoModel.todo = eventController.text;
-          todoModel.dateTime = DateTime.now().millisecondsSinceEpoch;
+          now = DateTime.now();
+          todoModel.dateTime = DateTime.utc(now.year, now.month, now.day, 12).millisecondsSinceEpoch;
           todoModel.startTime = startTime;
           todoModel.endTime = endTime;
           todoService.saveTodo(todoModel);
