@@ -41,6 +41,8 @@ class TodoListHandler with ChangeNotifier{
       todoModel.dateTime = todo['dateTime'];
       todoModel.todo = todo['todo'];
       todoModel.isDone = todo['isDone'];
+      todoModel.startTime = todo['startTime'];
+      todoModel.endTime = todo['endTime'];
       doneTodo.add(todoModel);
     });
     print(doneTodo.length);

@@ -68,6 +68,10 @@ class PopupLayout extends ModalRoute {
 
   Widget _buildOverlayContent(BuildContext context) {
     return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey[500],
+        borderRadius: BorderRadius.all(Radius.circular(10))
+      ),
       margin: EdgeInsets.only(
           bottom: this.bottom,
           left: this.left,

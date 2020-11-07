@@ -136,7 +136,6 @@ class _TodoListState extends State<TodoList> {
   }
 
   Widget _TableCalendar() {
-    List holidays = [];
     return TableCalendar( // Calendar Style
       initialCalendarFormat: CalendarFormat.week,
       events: todoListHandler.events,

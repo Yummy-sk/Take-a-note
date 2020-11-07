@@ -8,6 +8,8 @@ class TodoModel {
   
   TodoModel() {
     this.isDone = 0;
+    this.startTime = ' ';
+    this.endTime = ' ';
   }
 
   todoModelMap() {

@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:take_a_note_project/todoList/todoList_handler.dart';
-
 import '../pomodoro_handler.dart';
 
 class SelectTodo extends StatefulWidget {

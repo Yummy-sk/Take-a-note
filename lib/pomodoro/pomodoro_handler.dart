@@ -6,6 +6,7 @@ import 'package:take_a_note_project/pomodoro/pomodoro.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:take_a_note_project/pomodoro/show_bottom_sheet/show_bottom_sheet.dart';
 
+
 class PomodoroHandler with ChangeNotifier {
   Timer timer;
   DateTime start;
@@ -21,7 +22,7 @@ class PomodoroHandler with ChangeNotifier {
   BuildContext context;
   SharedPreferences prefs;
   static final DateTime checkTime = DateTime.now();
-  static final DateFormat formatter = DateFormat('MM월 dd일 H시 m분');
+  static final DateFormat formatter = DateFormat('H시 m분');
   final String formatted = formatter.format(checkTime);
 
   PomodoroHandler(BuildContext context){

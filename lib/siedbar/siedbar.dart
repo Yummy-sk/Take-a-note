@@ -69,7 +69,7 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
           children: <Widget>[
             SizedBox(height: 100,),
             ListTile(
-              title: Text("Test")
+              title: Image.asset('images/Grayscale on Transparent.png', scale: 20,)
             ),
             Divider(
               height: 64,

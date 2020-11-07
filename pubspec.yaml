@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.8.0 <3.0.0"
 
 dependencies:
   path: ^1.7.0
@@ -66,6 +66,14 @@ flutter:
     - images/calendar.png
     - images/pomodoro.png
     - images/settings.png
+    - images/Black on Transparent.png
+    - images/Black on White.png
+    - images/Grayscale on Transparent.png
+    - images/Monochrome on Transparent.png
+    - images/Original on Transparent.png
+    - images/Original.png
+    - images/White on Black.png
+    - images/White on Transparent.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
@@ -94,6 +102,6 @@ flutter:
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
 flutter_native_splash:
-  image: assets/Take A Note!-logo-white (2) (1).png
+  image: images/Grayscale on Transparent.png
   color: "#000000"
   fill: true

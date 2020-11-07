@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:take_a_note_project/calender_view/month_table.dart';
@@ -12,6 +13,7 @@ import 'package:take_a_note_project/siedbar/siedbar.dart';
 import 'menu_item.dart';
 
 class SideBarLayout extends StatelessWidget {
+  SideBar sideBar = new SideBar();
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -26,7 +28,10 @@ class SideBarLayout extends StatelessWidget {
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           centerTitle: true,
-          title: Text('Take a note'),
+          title: Image.asset('images/Grayscale on Transparent.png', scale: 40,),
+          actions: [
+            IconButton(icon: Icon(CupertinoIcons.ellipsis, size: 30, color: Color(0xFF1BB5FD),), onPressed: null)
+          ],
           elevation: 0.0,
           backgroundColor: Colors.black38.withOpacity(0.5),
           shape: RoundedRectangleBorder(

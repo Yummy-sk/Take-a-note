@@ -39,7 +39,10 @@ Widget build(BuildContext context) {
 Widget bottomBar(){
   return Container(
     width: screenWidth,
-    color: Colors.white,
+    decoration: BoxDecoration(
+      color: Colors.grey[300],
+      borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))
+    ),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[

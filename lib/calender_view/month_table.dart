@@ -76,7 +76,6 @@ class _TimeTableState extends State<TimeTable> {
                 });
               },
             ),
-            SizedBox(height: 20),
             Container(
               padding:EdgeInsets.only(left: 30),
               width: MediaQuery.of(context).size.width,
@@ -154,9 +153,9 @@ class _TimeTableState extends State<TimeTable> {
         elevation: 5,
         color: color,
         child: ListTile(
-          leading: Icon(CupertinoIcons.check_mark_circled_solid, color: Colors.greenAccent, size: 40,),
+          leading: Icon(CupertinoIcons.check_mark_circled_solid, color: Colors.greenAccent, size: 45,),
           title: Text(
-              (startTime != null) ? "`$startTime` ~ `$endTime`" : "- ~ -"
+              (startTime != null) ? "$startTime ~ $endTime" : "- ~ -"
               ,style: TextStyle(
               fontWeight: FontWeight.normal, fontSize: 20, color: titleColor)),
           subtitle: Text(toDo, style: TextStyle(

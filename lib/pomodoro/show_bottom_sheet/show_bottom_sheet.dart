@@ -1,11 +1,14 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:take_a_note_project/model/todo_model.dart';
+import 'package:take_a_note_project/pomodoro/pomodoro_handler.dart';
 import 'package:take_a_note_project/pomodoro/show_bottom_sheet/popup_content.dart';
 import 'package:take_a_note_project/pomodoro/show_bottom_sheet/popup_layout.dart';
 import 'package:take_a_note_project/pomodoro/show_bottom_sheet/select_todo.dart';
 import 'package:take_a_note_project/pomodoro/show_bottom_sheet/select_todo.dart';
 import 'package:take_a_note_project/services/todo_service.dart';
+import 'package:take_a_note_project/todoList/todoList_handler.dart';
 
 bottomSheet(BuildContext context, String startTime, String endTime) {
   TextEditingController textEditingController = TextEditingController();
@@ -25,7 +28,7 @@ bottomSheet(BuildContext context, String startTime, String endTime) {
                 child: Column(
                   children: <Widget>[
                     ListTile(
-                      leading: Icon(Icons.create),
+                      leading: Icon(Icons.create_outlined),
                       title: Text('직접 작성합니다.'),
                       onTap: () => {
                         Navigator.pop(context),
@@ -77,7 +80,7 @@ bottomSheet(BuildContext context, String startTime, String endTime) {
                       title: Text('Todo List에서 선택합니다.'),
                       onTap: () => {
                         Navigator.pop(context),
-                        showPopup(context, SelectTodo())
+                        showPopup(context)
                       },
                     ),
                     ListTile(
@@ -132,7 +135,10 @@ bottomSheet(BuildContext context, String startTime, String endTime) {
       },
     );
   }
-  showPopup(BuildContext context, Widget widget, {BuildContext popupContext}) {
+  showPopup(BuildContext context) {
+    TodoListHandler todoListHandler = new TodoListHandler();
+    PomodoroHandler pomodoroHandler = new PomodoroHandler(context);
+
     Navigator.push(
       context,
       PopupLayout(
@@ -140,25 +146,7 @@ bottomSheet(BuildContext context, String startTime, String endTime) {
         left: 30,
         right: 30,
         bottom: 50,
-        child: PopupContent(
-          content: Scaffold(
-            appBar: AppBar(
-              title: Text("했던 일을 선택합니다"),
-              leading: Builder(builder: (context) {
-                return IconButton(
-                  icon: Icon(Icons.arrow_back),
-                  onPressed: () {
-                    try {
-                      Navigator.pop(context);
-                    }catch(e) {}
-                  },
-                );
-              },),
-            ),
-            resizeToAvoidBottomPadding: false,
-            body: widget,
-          ),
-        )
+        child: PopupContent(todoListHandler, pomodoroHandler)
       )
     );
   }
