@@ -42,6 +42,7 @@ class PomodoroHandler with ChangeNotifier {
     elapsedTime = 0;
     timer.cancel();
     endTime = formatter.format(new DateTime.now());
+    print(endTime);
     isPlaying = false;
     bottomSheet(context, startTime, endTime);
     notifyListeners();
@@ -55,8 +56,9 @@ class PomodoroHandler with ChangeNotifier {
   }
 
   StartTimer(time) {
-    startTime = formatted;
+    startTime = formatter.format(new DateTime.now());
     start = new DateTime.now();
+    print(startTime);
     start = elapsedTime > 0
         ? start.subtract(Duration(seconds: elapsedTime))
         : start;

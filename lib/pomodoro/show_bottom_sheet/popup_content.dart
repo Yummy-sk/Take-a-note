@@ -7,10 +7,12 @@ import 'package:take_a_note_project/todoList/todoList_handler.dart';
 
 class PopupContent extends StatefulWidget {
   TodoListHandler todoListHandler;
-  PomodoroHandler pomodoroHandler;
-  PopupContent(TodoListHandler todoListHandler, PomodoroHandler pomodoroHandler){
+  String startTime;
+  String endTime;
+  PopupContent(TodoListHandler todoListHandler, String startTime, String endTime){
     this.todoListHandler = todoListHandler;
-    this.pomodoroHandler = pomodoroHandler;
+    this.startTime = startTime;
+    this.endTime = endTime;
   }
   _PopupContentState createState() => _PopupContentState();
 }
@@ -137,10 +139,10 @@ class _PopupContentState extends State<PopupContent> {
                                     title: Text(widget.todoListHandler.onProgressTodo[index].todo),
                                     onTap: (){
                                       setState(() {
-                                        print(widget.pomodoroHandler.startTime); // 왜 null을 띄울까..?
+                                        print(widget.startTime); // 왜 null을 띄울까..?
                                         widget.todoListHandler.onProgressTodo[index].isDone = 1;
-                                        widget.todoListHandler.onProgressTodo[index].startTime = widget.pomodoroHandler.startTime;
-                                        widget.todoListHandler.onProgressTodo[index].endTime = widget.pomodoroHandler.endTime;
+                                        widget.todoListHandler.onProgressTodo[index].startTime = widget.startTime;
+                                        widget.todoListHandler.onProgressTodo[index].endTime = widget.endTime;
                                         widget.todoListHandler.setTodo(widget.todoListHandler.onProgressTodo[index]);
                                       });
                                     },

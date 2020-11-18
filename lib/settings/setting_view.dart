@@ -26,6 +26,7 @@ class _SettingViewState extends State<SettingView> {
   Widget build(BuildContext context) {
     settingDataHandler = Provider.of<SettingDataHandler>(context, listen: false);
     return Scaffold(
+      backgroundColor: Color(0xff212930),
       body: Container(
         padding: EdgeInsets.all(10),
         margin: EdgeInsets.only(left: 10, right: 10, top: 50, bottom: 50),
@@ -33,6 +34,7 @@ class _SettingViewState extends State<SettingView> {
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           child: Card(
+            color: Color(0xffC3C8CD),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20.0),
             ),

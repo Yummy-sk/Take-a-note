@@ -29,9 +29,6 @@ class SideBarLayout extends StatelessWidget {
         appBar: AppBar(
           centerTitle: true,
           title: Image.asset('images/Grayscale on Transparent.png', scale: 40,),
-          actions: [
-            IconButton(icon: Icon(CupertinoIcons.ellipsis, size: 30, color: Color(0xFF1BB5FD),), onPressed: null)
-          ],
           elevation: 0.0,
           backgroundColor: Colors.black38.withOpacity(0.5),
           shape: RoundedRectangleBorder(

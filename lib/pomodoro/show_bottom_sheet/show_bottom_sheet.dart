@@ -1,12 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:take_a_note_project/model/todo_model.dart';
-import 'package:take_a_note_project/pomodoro/pomodoro_handler.dart';
 import 'package:take_a_note_project/pomodoro/show_bottom_sheet/popup_content.dart';
 import 'package:take_a_note_project/pomodoro/show_bottom_sheet/popup_layout.dart';
-import 'package:take_a_note_project/pomodoro/show_bottom_sheet/select_todo.dart';
-import 'package:take_a_note_project/pomodoro/show_bottom_sheet/select_todo.dart';
 import 'package:take_a_note_project/services/todo_service.dart';
 import 'package:take_a_note_project/todoList/todoList_handler.dart';
 
@@ -38,9 +34,7 @@ bottomSheet(BuildContext context, String startTime, String endTime) {
                                 AlertDialog(
                                     title: Center(
                                         child: Text(startTime +
-                                            " ~ " +
-                                            endTime +
-                                            " 동안 무엇을 하셨나요?")),
+                                            " ~ " + endTime + "\n" + "동안 무엇을 하셨나요?")),
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.all(
                                             (Radius.circular(20.0)))),
@@ -48,30 +42,39 @@ bottomSheet(BuildContext context, String startTime, String endTime) {
                                       controller: textEditingController,
                                     ),
                                     actions: <Widget>[
-                                      actionButton(
-                                          true,
-                                          Colors.lightBlue,
-                                          Text("Save", style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.lightBlue),),
-                                          context,
-                                        startTime,
-                                        endTime,
-                                        textEditingController,
-                                      ),
-                                      actionButton(
-                                          false,
-                                          Colors.deepOrangeAccent,
-                                          Text(
-                                            "Cancel",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.deepOrangeAccent),),
-                                          context,
-                                          startTime,
-                                          endTime,
-                                          textEditingController,
-                                      )
+                                     SizedBox(
+                                       width: MediaQuery.of(context).size.width,
+                                       child: Row(
+                                         mainAxisAlignment: MainAxisAlignment.center,
+                                         children: [
+                                           actionButton(
+                                             true,
+                                             Colors.lightBlue,
+                                             Text("Save", style: TextStyle(
+                                                 fontWeight: FontWeight.bold,
+                                                 color: Colors.lightBlue),),
+                                             context,
+                                             startTime,
+                                             endTime,
+                                             textEditingController,
+                                           ),
+                                           SizedBox(width: 10.0),
+                                           actionButton(
+                                             false,
+                                             Colors.deepOrangeAccent,
+                                             Text(
+                                               "Cancel",
+                                               style: TextStyle(
+                                                   fontWeight: FontWeight.bold,
+                                                   color: Colors.deepOrangeAccent),),
+                                             context,
+                                             startTime,
+                                             endTime,
+                                             textEditingController,
+                                           )
+                                         ],
+                                       ),
+                                     )
                                     ]))
                       },
                     ),
@@ -80,7 +83,7 @@ bottomSheet(BuildContext context, String startTime, String endTime) {
                       title: Text('Todo List에서 선택합니다.'),
                       onTap: () => {
                         Navigator.pop(context),
-                        showPopup(context)
+                        showPopup(context, startTime, endTime)
                       },
                     ),
                     ListTile(
@@ -135,9 +138,8 @@ bottomSheet(BuildContext context, String startTime, String endTime) {
       },
     );
   }
-  showPopup(BuildContext context) {
+  showPopup(BuildContext context, String startTime, String endTime) {
     TodoListHandler todoListHandler = new TodoListHandler();
-    PomodoroHandler pomodoroHandler = new PomodoroHandler(context);
 
     Navigator.push(
       context,
@@ -146,7 +148,7 @@ bottomSheet(BuildContext context, String startTime, String endTime) {
         left: 30,
         right: 30,
         bottom: 50,
-        child: PopupContent(todoListHandler, pomodoroHandler)
+        child: PopupContent(todoListHandler, startTime, endTime)
       )
     );
   }

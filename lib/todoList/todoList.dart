@@ -211,19 +211,27 @@ class _TodoListState extends State<TodoList> {
                 controller: eventController,
               ),
               actions: <Widget>[
-                RaisedButton(
-                  color: Colors.white,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18.0),
-                      side: BorderSide(color: Colors.lightBlue)
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      RaisedButton(
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
+                            side: BorderSide(color: Colors.lightBlue)
+                        ),
+                        child: Text("Save", style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.lightBlue),),
+                        onPressed: () {
+                          todoListHandler.addTodoList(
+                              controller.selectedDay, eventController);
+                          Navigator.pop(context);
+                        },
+                      )
+                    ],
                   ),
-                  child: Text("Save", style: TextStyle(
-                      fontWeight: FontWeight.bold, color: Colors.lightBlue),),
-                  onPressed: () {
-                    todoListHandler.addTodoList(
-                        controller.selectedDay, eventController);
-                    Navigator.pop(context);
-                  },
                 )
               ],
             )
@@ -242,34 +250,43 @@ class _TodoListState extends State<TodoList> {
               ),
               content: TextField(controller: eventController),
               actions: <Widget>[
-                RaisedButton(
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
-                        side: BorderSide(color: Colors.lightBlue)
-                    ),
-                    child: Text("Save", style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.lightBlue),),
-                    onPressed: () {
-                      todoItem.todo = eventController.text;
-                      todoListHandler.setTodo(todoItem);
-                      todoListHandler.relodeTodos(controller.selectedDay);
-                      eventController.clear();
-                      Navigator.pop(context);
-                    }
-                ),
-                RaisedButton(
-                  color: Colors.white,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18.0),
-                      side: BorderSide(color: Colors.deepOrangeAccent)
+                SizedBox(
+                 width: MediaQuery.of(context).size.width,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      RaisedButton(
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                              side: BorderSide(color: Colors.lightBlue)
+                          ),
+                          child: Text("Save", style: TextStyle(
+                              fontWeight: FontWeight.bold, color: Colors.lightBlue),),
+                          onPressed: () {
+                            todoItem.todo = eventController.text;
+                            todoListHandler.setTodo(todoItem);
+                            todoListHandler.relodeTodos(controller.selectedDay);
+                            eventController.clear();
+                            Navigator.pop(context);
+                          }
+                      ),
+                      SizedBox(width: 10.0),
+                      RaisedButton(
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
+                            side: BorderSide(color: Colors.deepOrangeAccent)
+                        ),
+                        child: Text("Cancel", style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.deepOrangeAccent),),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      )
+                    ],
                   ),
-                  child: Text("Cancel", style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.deepOrangeAccent),),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
                 )
               ],
             )
@@ -281,38 +298,49 @@ class _TodoListState extends State<TodoList> {
         context: context,
         builder: (context) =>
             AlertDialog(
-              title: Text(
-                "정말 삭제하시겠어요?", style: TextStyle(fontWeight: FontWeight.bold),),
+              title: Center(
+                child: Text(
+                  "정말 삭제하시겠어요?", style: TextStyle(fontWeight: FontWeight.bold),),
+              ),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20.0))
               ),
               actions: <Widget>[
-                RaisedButton(
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
-                        side: BorderSide(color: Colors.lightBlue)
-                    ),
-                    child: Text("Yes", style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.lightBlue),),
-                    onPressed: () {
-                      todoListHandler.deleteTodo(todoItem.key);
-                      todoListHandler.relodeTodos(controller.selectedDay);
-                      Navigator.pop(context);
-                    }
-                ),
-                RaisedButton(
-                  color: Colors.white,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18.0),
-                      side: BorderSide(color: Colors.deepOrangeAccent)
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      RaisedButton(
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                              side: BorderSide(color: Colors.lightBlue)
+                          ),
+                          child: Text("Yes", style: TextStyle(
+                              fontWeight: FontWeight.bold, color: Colors.lightBlue),),
+                          onPressed: () {
+                            todoListHandler.deleteTodo(todoItem.key);
+                            todoListHandler.relodeTodos(controller.selectedDay);
+                            Navigator.pop(context);
+                          }
+                      ),
+                      SizedBox(width: 10.0),
+                      RaisedButton(
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
+                            side: BorderSide(color: Colors.deepOrangeAccent)
+                        ),
+                        child: Text("Cancel", style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.deepOrangeAccent),),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      )
+                    ],
                   ),
-                  child: Text("Cancel", style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.deepOrangeAccent),),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
                 )
               ],
             )
