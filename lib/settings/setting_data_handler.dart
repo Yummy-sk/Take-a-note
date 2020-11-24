@@ -7,7 +7,7 @@ class SettingDataHandler extends ChangeNotifier {
   SharedPreferences prefs;
 
   Map<String, int> selectedTimes = {
-    "Pomodoro Setting": 15,
+    "Pomodoro Setting": 25,
     "Rest Time Setting": 5,
     "Long Rest Time Setting": 15,
     "Term of Resting Time Setting": 5
@@ -34,11 +34,11 @@ class SettingDataHandler extends ChangeNotifier {
   }
 
   getPomodoroTime(){
-    return selectedTimes['Pomodoro Setting'] * 60;
+    return selectedTimes['Pomodoro Setting'] == 5 ? selectedTimes['Pomodoro Setting'] : selectedTimes['Pomodoro Setting'] * 60;
   }
 
   getRestTime(){
-    return selectedTimes['Rest Time Setting'] * 60;
+    return selectedTimes['Rest Time Setting'] == 3 ? selectedTimes['Rest Time Setting'] : selectedTimes['Rest Time Setting'] * 60;
   }
 
   getLongRestTime(){

@@ -18,7 +18,7 @@ class TodoListHandler with ChangeNotifier{
   }
 
   getOnProgress(DateTime dateTime) async {
-    onProgressTodo.clear();
+    List<TodoModel> temp = new List<TodoModel>();
     var todos = await _todoService.readTodoOnProgress('todo', dateTime.millisecondsSinceEpoch, 0);
     todos.forEach((todo){
       var todoModel = TodoModel();
@@ -26,14 +26,16 @@ class TodoListHandler with ChangeNotifier{
       todoModel.dateTime = todo['dateTime'];
       todoModel.todo = todo['todo'];
       todoModel.isDone = todo['isDone'];
-      onProgressTodo.add(todoModel);
+      temp.add(todoModel);
     });
+    onProgressTodo = temp;
     //print(onProgressTodo.length);
     notifyListeners();
   }
 
   getDone(DateTime dateTime) async {
-    doneTodo.clear();
+    // doneTodo.clear();
+    List<TodoModel> temp = new List<TodoModel>();
     var todos = await _todoService.readTodoOnProgress('todo', dateTime.millisecondsSinceEpoch, 1);
     todos.forEach((todo){
       var todoModel = TodoModel();
@@ -43,8 +45,10 @@ class TodoListHandler with ChangeNotifier{
       todoModel.isDone = todo['isDone'];
       todoModel.startTime = todo['startTime'];
       todoModel.endTime = todo['endTime'];
-      doneTodo.add(todoModel);
+      temp.add(todoModel);
+      // doneTodo.add(todoModel);
     });
+    doneTodo = temp;
     print(doneTodo.length);
     notifyListeners();
   }

@@ -167,6 +167,9 @@ class _TodoListState extends State<TodoList> {
           todoListHandler.relodeTodos(controller.selectedDay);
         });
       },
+      onCalendarCreated: (DateTime first, DateTime last, CalendarFormat format) {
+        todoListHandler.relodeTodos(controller.selectedDay);
+      },
       builders: CalendarBuilders(
         selectedDayBuilder: (context, date, events) =>
             Container(

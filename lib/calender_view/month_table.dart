@@ -75,6 +75,9 @@ class _TimeTableState extends State<TimeTable> {
                   todoListHandler.getDone(controller.selectedDay);
                 });
               },
+              onCalendarCreated: (DateTime first, DateTime last, CalendarFormat format) {
+                todoListHandler.getDone(controller.selectedDay);
+              },
             ),
             Container(
               padding:EdgeInsets.only(left: 30),
@@ -97,19 +100,22 @@ class _TimeTableState extends State<TimeTable> {
                           fontWeight: FontWeight.bold
                         ),),
                       ),
-                      ListView.builder(
-                        scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: todoListHandler.doneTodo.length,
-                          itemBuilder: (context, index) {
-                            return GestureDetector(
-                              child: todoCard(context,
-                                  todoListHandler.doneTodo,
-                                  index
-                              ),
-                            );
-                          }
+                      Expanded(
+                        child: ListView.builder(
+                            scrollDirection: Axis.vertical,
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemCount: todoListHandler.doneTodo.length,
+                              itemBuilder: (context, index) {
+                                print(index);
+                                return GestureDetector(
+                                  child: todoCard(context,
+                                      todoListHandler.doneTodo,
+                                      index
+                                  ),
+                                );
+                              }
+                        ),
                       )
                     ],
                   ),
@@ -159,7 +165,7 @@ class _TimeTableState extends State<TimeTable> {
               ,style: TextStyle(
               fontWeight: FontWeight.normal, fontSize: 20, color: titleColor)),
           subtitle: Text(toDo, style: TextStyle(
-            fontWeight: FontWeight.normal, fontSize: 30, color: Colors.white70
+              fontWeight: FontWeight.normal, fontSize: 30, color: Colors.white70
           ),),
         )
     );

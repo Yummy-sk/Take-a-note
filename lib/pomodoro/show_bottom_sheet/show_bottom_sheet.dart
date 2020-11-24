@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:take_a_note_project/model/todo_model.dart';
 import 'package:take_a_note_project/pomodoro/show_bottom_sheet/popup_content.dart';
 import 'package:take_a_note_project/pomodoro/show_bottom_sheet/popup_layout.dart';
@@ -33,8 +34,11 @@ bottomSheet(BuildContext context, String startTime, String endTime) {
                             builder: (context) =>
                                 AlertDialog(
                                     title: Center(
-                                        child: Text(startTime +
-                                            " ~ " + endTime + "\n" + "동안 무엇을 하셨나요?")),
+                                        child: Padding(
+                                          padding: EdgeInsets.only(bottom: 10.0),
+                                          child: Text(startTime +
+                                              " ~ " + endTime + "\n" + "동안 무엇을 하셨나요?"),
+                                        )),
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.all(
                                             (Radius.circular(20.0)))),
@@ -139,8 +143,7 @@ bottomSheet(BuildContext context, String startTime, String endTime) {
     );
   }
   showPopup(BuildContext context, String startTime, String endTime) {
-    TodoListHandler todoListHandler = new TodoListHandler();
-
+    TodoListHandler todoListHandler = TodoListHandler();
     Navigator.push(
       context,
       PopupLayout(

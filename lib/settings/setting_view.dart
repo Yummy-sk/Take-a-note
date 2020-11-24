@@ -10,8 +10,8 @@ class SettingView extends StatefulWidget {
 }
 
 class _SettingViewState extends State<SettingView> {
-  var pomodoroSetting = Setting("Pomodoro Setting", [ 15, 30, 60, 90, 120, 1], " 분");
-  var restTimeSetting = Setting("Rest Time Setting", [ 5, 10, 15, 20, 25, 1], " 분");
+  var pomodoroSetting = Setting("Pomodoro Setting", [ 25, 30, 60, 90, 120, 5], " 분");
+  var restTimeSetting = Setting("Rest Time Setting", [ 5, 10, 15, 20, 25, 3], " 분");
   var longRestTimeSetting = Setting("Long Rest Time Setting",  [ 10, 15, 20, 25, 30, 2], " 분");
   var termOfRestingTimeSetting = Setting("Term of Resting Time Setting", [ 3, 4, 5, 6, 7], " 번");
   SettingDataHandler settingDataHandler;
@@ -24,7 +24,7 @@ class _SettingViewState extends State<SettingView> {
 
   @override
   Widget build(BuildContext context) {
-    settingDataHandler = Provider.of<SettingDataHandler>(context, listen: false);
+    settingDataHandler = Provider.of<SettingDataHandler>(context);
     return Scaffold(
       backgroundColor: Color(0xff212930),
       body: Container(

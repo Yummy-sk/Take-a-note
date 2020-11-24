@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:take_a_note_project/pomodoro/pomodoro_handler.dart';
 import 'package:take_a_note_project/todoList/todoList_handler.dart';
 
 class PopupContent extends StatefulWidget {
@@ -99,6 +98,9 @@ class _PopupContentState extends State<PopupContent> {
                     widget.todoListHandler.selectedEvents = events;
                     widget.todoListHandler.getOnProgress(controller.selectedDay);
                   });
+                },
+                onCalendarCreated: (DateTime first, DateTime last, CalendarFormat format) {
+                  widget.todoListHandler.getOnProgress(controller.selectedDay);
                 },
               ),
               Container(
